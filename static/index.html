@@ -52,14 +52,14 @@
 	<p>
 	O passeio é dividido em três seções. No final de cada seção há uma série de exercícios para você completar.
 	<p>
-	O passeio é interativo. Clique no botão Executar agora (ou pressione Shift-Enter) para compilar e executar o programa em <span class="appengineMode">um sercidor remoto.</span><span class="localMode">seu computador.</span>
+	O passeio é interativo. Clique no botão Executar agora (ou pressione Shift-Enter) para compilar e executar o programa em <span class="appengineMode">um servidor remoto.</span><span class="localMode">seu computador.</span>
 	O resultado é exibido abaixo do código.
 	<p>
   	Estes programas exemplo demonstrarão os diferentes aspectos de Go. Os programas do passeio são feitos para serem pontos de partida para a sua própria experimentação.  
         <p>
 	Edite o programa e execute-o novamente.
 	<p>
-	Sempre que você estiver pronto para seguir em frente, clique no botão Avançar ou pressione a tecla PageDown.
+	Sempre que você estiver pronto para seguir em frente, clique no botão Próximo ou pressione a tecla PageDown.
 <div>
 package main
 
@@ -87,7 +87,7 @@ func main() {
 	<p>
 	e execute o binário resultante <code>gotour</code>.
 	<p>
-	Caso contrário, clique no botão "Avançar" ou pressione PageDown para continuar.
+	Caso contrário, clique no botão "Próximo" ou pressione PageDown para continuar.
 	<p>
 	<i>(Você pode voltar a estas instruções a qualquer momento, clicando no botão "Índice".)</i>
 </div>
@@ -122,7 +122,7 @@ func main() {
 <div class="slide">
 	<h2>Importações</h2>
 	<p>
-	Este grupo de códigos em parênteses da importação, é a declaração de importação "consignada". Você também pode escrever várias declarações de importação, tais como: 
+	Este grupo de códigos em parênteses da importação, é a declaração de importação "consignada". Você também pode escrever várias declarações de importação assim: 
 	<pre>
 	import "fmt"
 	import "math"
@@ -150,7 +150,7 @@ func main() {
 	<p>
 	Em Go, um nome é exportado se começa com uma letra maiúscula.
 	<p>
-	<code>Foo</code>  é um nome exportados, assim como  <code>FOO</code>.
+	<code>Foo</code>  é um nome exportado, assim como <code>FOO</code>.
 	O nome <code>foo</code> não é exportado.
 	<p>
 	Execute o código. Em seguida, renomeie <code>math.pi</code> para <code>math.Pi</code>
@@ -501,7 +501,7 @@ func main() {
 	<p>
 	Como o <code>for</code>, a instrução <code>if</code> pode começar com uma breve declaração antes de executar a condição.
 	<p>
-	Variáveis ​​declaradas pela instrução são válidas somente no escopo até ao final do <code>if</code>.
+	Variáveis ​​declaradas pela instrução são válidas somente no escopo até o final do <code>if</code>.
 	<p>
 	(Tente usar <code>v</code> na última instrução <code>return</code>.)
 <div>
@@ -1265,7 +1265,7 @@ func main() {
 	sua imagem, interpretando os números inteiros como escala dos valores de cinza (bem, bluescale).
 	<p>
 	A escolha da imagem é com você. 
-	Funções interessantes incluem <code>x^y</code>, <code>(x+y)/2</code>, and <code>x*y</code>.
+	Funções interessantes incluem <code>x^y</code>, <code>(x+y)/2</code>, e <code>x*y</code>.
 	<p>
 	(Você precisa usar um loop para alocar cada <code>[]uint8</code> dentro
 	do <code>[][]uint8</code>.)
@@ -1667,7 +1667,7 @@ func main() {
 <div class="slide">
 	<h2>Imagens</h2>
 	<p>
-	<a target="_blank" href="http://golang.org/pkg/image/#Image">Pacote image</a> define a interface<code>Imagem</code>:
+	<a target="_blank" href="http://golang.org/pkg/image/#Image">Pacote image</a> define a interface <code>Imagem</code>:
 	<pre>
 package image
 
@@ -1703,7 +1703,7 @@ func main() {
 <div class="slide">
 	<h2>Exercício: Erros</h2>
 	<p>
-	Copie o sua função <code>Sqrt</code> dos exercícios anteriores e modifique-o para retornar um valor de <code>erro</code>.
+	Copie o sua função <code>Sqrt</code> dos exercícios anteriores e modifique-o para retornar um valor de <code>error</code>.
 	<p>
 	<code>Sqrt</code> deve retornar um valor de erro não-nil quando recebe um número 
 	negativo, pois não suporta números complexos.
@@ -1712,7 +1712,7 @@ func main() {
 	<pre>
 type ErroNegativoSqrt float64</pre>
 	<p>
-	e faça-o dar <code>erro</code>, dando-lhe um
+	e faça-o dar <code>error</code>, dando-lhe um
 	<pre>
 func (e ErroNegativoSqrt) Error() string</pre>
 	<p>
@@ -1831,7 +1831,7 @@ func main() {
 	de substituição para todos os caracteres alfabéticos.
 	<p>
 	O tipo <code>Leitorrot13</code> é fornecido para você. Você deve torná-lo um
-	<code>io.Reader</code> através da implementação de seu método <code>Ler</code>.
+	<code>io.Reader</code> através da implementação de seu método <code>Read</code>.
 <div>
 package main
 
@@ -1847,7 +1847,7 @@ type Leitorrot13 struct {
 
 func main() {
 	s := strings.NewReader(
-		"Lbh penpxrq gur pbqr!")
+		"Ibpr dhroebh b pbqvtb!")
 	r := Leitorrot13{s}
 	io.Copy(os.Stdout, &amp;r)
 }
@@ -1870,11 +1870,11 @@ func main() {
 	<pre>f(x, y, z)</pre>
 	<p>
 	A avaliação
-        de <code>f</code>, <code>x</code>, <code>y</code>, and <code>z</code>
-        acontece no goroutine corrente e para a execução de f 
-        acontece no goroutine novo.
+        de <code>f</code>, <code>x</code>, <code>y</code>, e <code>z</code>
+        acontece na goroutine corrente e para a execução de f 
+        acontece em uma goroutine nova.
 	<p>
-	Goroutines executam no mesmo espaço de endereço, para acesso à memória compartilhada 
+	Goroutines executam no mesmo espaço de endereço, para que o acesso à memória compartilhada 
 	seja sincronizada. O pacote de <code><a href="http://golang.org/pkg/sync/"
 	target="_blank">sincronia</a></code> fornece as primitivas úteis, embora você não vá precisar muito deles 
 	em Go, pois há outras primitivas. 
@@ -1905,10 +1905,10 @@ func main() {
 	<h2>Canais</h2>
 
 	<p>
-	Canais são um canal digitado através do qual você pode enviar e receber valores com o operador de canal, <code>&lt;-</code>.
+	Canais são um conduto tipado através do qual você pode enviar e receber valores com o operador de canal, <code>&lt;-</code>.
 <pre>
 ch <- v    // v envia para o canal ch.
-v := <-ch  // Recebe do pc, e
+v := <-ch  // Recebe do ch, e
            // atribui o valor de v
 </pre>
 	<p>
@@ -1921,7 +1921,7 @@ ch := make(chan int)
 </pre>
 
 	<p>
-	Por padrão, envia e recebe bloco até o outro lado estar pronto. 
+	Por padrão, enviam e recebem bloco até o outro lado estar pronto. 
 	Isso permite que goroutines sincronizem sem bloqueios explícitos ou 
 	variáveis ​​de condição.
 <div>
@@ -1962,7 +1962,7 @@ ch := make(chan int, 100)
 </pre>
 
 	<p>
-	Envia para um bloco de canais bufferizados apenas quando o buffer estever cheio. 
+	Envia para um bloco de canais bufferizados apenas quando o buffer está cheio. 
 	Recebe bloco quando o buffer está vazio.
 
 	<p>
@@ -1987,18 +1987,18 @@ func main() {
 	<h2>Range e Close</h2>
 	<p>
 	Um remetente pode <code>close</code> um canal para indicar que os valores não serão mais enviados. 
-	Receptores pode testar se um canal foi fechado através da atribuição de um segundo parâmetro para 
+	Receptores podem testar se um canal foi fechado através da atribuição de um segundo parâmetro para 
 	a expressão de recepção: depois
 	<pre>
 v, ok := &lt;-ch</pre>
 	<p>
-	<code>ok</code> é <code>false</code>  se houver valores não mais receber e que o canal está fechado.
+	<code>ok</code> é <code>false</code> se não há mais valores a receber e o canal está fechado.
 	<p>
 	O laço <code>for i := range c</code>  recebe valores do 
 	canal repetidamente até que seja fechado.
 	<p>
 	<b>Nota:</b> Apenas o remetente deve fechar um canal, nunca o 
-	receptor. O envio em um canal fechado irá causar um erro pânico.
+	receptor. O envio em um canal fechado irá causar um pânico.
 	<p>
 	<b>Outra nota</b>: Canais não são como arquivos, você geralmente não precisa fechá-los. O encerramento só é 
 	necessário quando o receptor precisa saber que não há mais valores chegando, como para terminar um 
