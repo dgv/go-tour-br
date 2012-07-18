@@ -30,8 +30,8 @@ import (
 const basePkg = "github.com/danvargas/go-tour-br/"
 
 var (
-	httpListen = flag.String("http", "127.0.0.1:3999", "host:port to listen on")
-	htmlOutput = flag.Bool("html", false, "render program output as HTML")
+	httpListen = flag.String("http", "127.0.0.1:3999", "para ouvir em host:port")
+	htmlOutput = flag.Bool("html", false, "processar a saída do programa como HTML")
 )
 
 var (
@@ -52,10 +52,10 @@ func main() {
 	// find and serve the go tour files
 	p, err := build.Default.Import(basePkg, "", build.FindOnly)
 	if err != nil {
-		log.Fatalf("Couldn't find tour files: %v", err)
+		log.Fatalf("Não foi possível encontrar os arquivos do passeio: %v", err)
 	}
 	root := p.Dir
-	log.Println("Serving content from", root)
+	log.Println("Servindo conteúdo de ", root)
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path == "/favicon.ico" || r.URL.Path == "/" {
 			fn := filepath.Join(root, "static", r.URL.Path[1:])
@@ -73,7 +73,7 @@ func main() {
 		log.Print(localhostWarning)
 	}
 
-	log.Printf("Open your web browser and visit http://%s/", *httpListen)
+	log.Printf("Abra seu navegador web e visite http://%s/", *httpListen)
 	log.Fatal(http.ListenAndServe(*httpListen, nil))
 }
 
@@ -172,7 +172,7 @@ func run(dir string, args ...string) ([]byte, error) {
 	running.Lock()
 	if running.cmd != nil {
 		defer running.Unlock()
-		return nil, fmt.Errorf("already running %s", running.cmd.Path)
+		return nil, fmt.Errorf("já está rodando %s", running.cmd.Path)
 	}
 	if err := cmd.Start(); err != nil {
 		running.Unlock()
