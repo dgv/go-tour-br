@@ -1,0 +1,205 @@
+body {
+	font-family: 'Droid Serif', serif;
+	margin-left: 0px;
+	margin-right: 0px;
+	margin-top: 0px;
+	font-size: 120%;
+}
+#topnav {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	padding: 8px;
+	height: 34px;
+}
+
+#toc {
+	padding-left: 4em;
+	font-size: 12pt;
+}
+#toc li {
+	cursor: pointer;
+}
+#toc li:hover {
+	background: #ddd;
+}
+#topnav {
+	right: 50px;
+}
+
+#slidenum {
+	display: inline;
+	color: white;
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	margin: 0;
+	padding: 0;
+}
+
+pre {
+	margin-top: 0px;
+	margin-bottom: 0px;
+	white-space: pre-wrap;
+}
+
+h1, h2, h3 {
+	font-family: 'Droid Sans', sans-serif;
+	margin-top: 10px;
+}
+h1 {
+	color: #fff;
+	background-color: #444;
+	margin: 0px;
+	padding: 8px;
+	height: 40px;
+}
+
+pre, code, .codemirror pre {
+	font-family: 'Droid Sans Mono', monospace;
+}
+code, pre {
+	color: #006;
+}
+.codemirror pre, #output pre {
+	color: inherit;
+}
+.codemirror {
+	line-height: 1.4em;
+}
+#code {
+	border-right: 1px solid black;
+	border-bottom: 1px solid black;
+	background: #FFD;
+	position: absolute;
+	top: 56px;
+	left: 0;
+	right: 50%;
+	bottom: 20%;
+	padding-top: 2px;
+}
+#code .codemirror-scroll {
+	height: 100%;
+}
+#output {
+	border-right: 1px solid black;
+	position: absolute;
+	top: 80%;
+	bottom: 0;
+	left: 0;
+	right: 50%;
+	overflow: auto;
+	padding: 4px;
+}
+#output .loading {
+	color: #666;
+	margin-top: 1em;
+	text-align: center;
+}
+#output.error {
+	color: #B00;
+}
+#code .errLine {
+	background: #FDD !important;
+}
+
+.controls {
+	position: absolute;
+	z-index: 10;
+	top: 5px;
+	bottom: 5px;
+	right: 5px;
+}
+.controls #reset {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+}
+
+.content {
+	position: absolute;
+	padding-left: 8px;
+	padding-right: 4px;
+	left: 50%;
+	right: 0;
+	top: 56px;
+	bottom: 0;
+	overflow: auto;
+}
+.nocode .content {
+	left: 0;
+}
+
+hr {
+	border: 1px solid #ccc;
+}
+
+button {
+	display: inline;
+	font-size: 60%;
+	font-family: 'Droid Sans', sans-serif;
+	color: #000;
+	background-color: #eee;
+	border-color: #000;
+	border-width: 1px;
+	padding: 3px;
+	margin: 3px;
+}
+
+button:hover {
+	background-color: #fff;
+}
+
+button:active {
+	background-color: #ddd;
+}
+
+.nav {
+	float: right;
+	text-align: right;
+}
+.clear {
+	clear: right;
+}
+
+h2.nocode {
+	text-align: center;
+	font-size: 300%;
+	margin-bottom: 1em;
+}
+.toc {
+	display: none;
+	visibility: hidden;
+}
+
+/* Slide-specific styles */
+
+/* Loading state */
+.loading #slides,
+.loading #topnav,
+.loading #slidenum {
+	display: none;
+}
+#loading {
+	margin-top: 20%;
+	font-size: 150%;
+	text-align: center;
+	color: #555;
+	display: none;
+}
+.loading #loading {
+	display: block;
+}
+
+table.matrix td {
+	font-size: 120%;
+	text-align: center;
+	padding: 10px;
+}
+table.matrix td.good {
+	background: #bfb;
+}
+table.matrix td.bad {
+	background: #fbb;
+}

@@ -1,0 +1,213 @@
+(function() {
+
+var slides, editor, $editor, $output;
+var slide = null;
+var slidenum = 0;
+var codebox = null;
+
+function init() {
+	if (tourMode == 'local') {
+		$('.appengineMode').remove();
+	} else {
+		$('.localMode').remove();
+	}
+
+	var $toc = $("#toc").hide();
+	$("#tocbtn").click(function() {
+		if ($("#toc").is(":visible")) {
+			hideToc();
+		} else {
+			showToc();
+		}
+	});
+
+	slides = $("div.slide");
+	slides.each(function(i, slide) {
+		var $s = $(slide).hide();
+
+		var $sdiv = $s.find("div");
+		if (!$s.hasClass("nocode") && $sdiv.length > 0) {
+			var $div = $sdiv.last();
+			$div.remove();
+			$s.data("index", i);
+			$s.data("code", $div.text().trim());
+			$s.data("original", $div.text().trim());
+		}
+
+		var $content = $('<div class="content"/>');
+		$content.html($s.html());
+		$s.empty().append($content);
+
+		var $h2 = $content.find("h2").first();
+		var $nav;
+		if ($h2.length > 0) {
+			$("<div/>").addClass("clear").insertAfter($h2);
+			$nav = $("<div/>").addClass("nav");
+			if (i > 0) {
+				$nav.append($("<button>").click(function() {
+					show(i-1);
+				}).text("ANTERIOR").addClass("prev"));
+			}
+			if (i+1 < slides.length) {
+				$nav.append($("<button>").click(function() {
+					show(i+1);
+				}).text("PRÓXIMO").addClass("next"));
+			}
+			$nav.insertBefore($h2);
+
+			var thisI = i;
+			var $entry = $("<li/>").text($h2.text()).click(
+				function() { hideToc(); show(thisI); });
+			$toc.append($entry);
+
+		}
+		if ($s.hasClass("nocode")) {
+			$h2.addClass("nocode");
+		}
+	});
+
+	// set up playground editor
+	var $controls = $('<div/>').addClass('controls');
+	$controls.append($('<button id="reset">RESET</button>').click(reset));
+	$controls.append('<button id="run">EXECUTAR</button>');
+	$editor = $('<div id="code"/>');
+	$editor.append($controls);
+	$editor.append('<textarea/>');
+	$editor.insertBefore("#slides");
+	$output = $('<div id="output"/>').insertBefore("#slides");
+	editor = playground({
+		codeEl: "#code textarea",
+		outputEl: "#output",
+		runEl: "#run"
+	});
+}
+
+function showToc() {
+	$("#toc").show();
+	$("#slides, #code, #output").hide();
+	$("#tocbtn").text("SLIDES");
+}
+
+function hideToc() {
+	$("#toc").hide();
+	$("#slides, #code, #output").show();
+	$("#tocbtn").text("ÍNDICE");
+}
+
+function show(i) {
+	if(i < 0 || i >= slides.length)
+		return;
+		
+	// if a slide is already onscreen, hide it and store its code
+	if(slide != null) {
+		var $oldSlide = $(slide).hide();
+		if (!$oldSlide.hasClass("nocode")) {
+			save($oldSlide.data("index")) || $oldSlide.data("code", editor.getValue());
+		}
+	}
+
+	// switch to new slide
+	slidenum = i;
+	$("#slidenum").text(i+1);
+	slide = slides[i];
+	var $s = $(slide).show();
+
+	// load stored code, or hide code box
+	if ($s.hasClass("nocode")) {
+		$editor.hide();
+		$output.hide();
+	} else {
+		$editor.show();
+		$output.show().empty();
+		editor.setValue(load(i) || $s.data("code"));
+		editor.focus();
+	}
+
+	// update url fragment
+	var url = location.href;
+	var j = url.indexOf("#");
+	if(j >= 0)
+		url = url.substr(0, j);
+	url += "#" + (slidenum+1).toString();
+	location.href = url;
+}
+
+function reset() {
+	var $s = $(slide);
+	$s.data("code", $s.data("original"));
+	editor.setValue($s.data("code"));
+	save(slidenum);
+}
+	
+function save(page) {
+	if (!supports_html5_storage()) {
+		return false;
+	}
+
+	return localStorage['page'+page] = editor.getValue();
+}
+
+function load(page) {
+	if (!supports_html5_storage()) {
+		return false;
+	}
+
+	return localStorage['page'+page];
+}
+
+function urlSlideNumber(url) {
+	var i = url.indexOf("#");
+	if(i < 0)
+		return 0;
+	var frag = unescape(url.substr(i+1));
+	if(/^\d+$/.test(frag)) {
+		i = parseInt(frag);
+		if(i-1 < 0 || i-1 >= slides.length)
+			return 0;
+		return i-1;
+	}
+	return 0;
+}
+
+function pageUpDown(event) {
+	var e = window.event || event;
+	if (e.keyCode == 33) { // page up
+		e.preventDefault();
+		show(slidenum-1);
+		return false;
+	}
+	if (e.keyCode == 34) { // page down
+		e.preventDefault();
+		show(slidenum+1);
+		return false;
+	}
+	return true;
+}
+
+$(document).ready(function() {
+	init();
+	$('body').removeClass('loading');
+	if (location.href.indexOf('#') < 0) {
+		show(0);
+	} else {
+		show(urlSlideNumber(location.href));
+	}
+	document.onkeydown = pageUpDown;
+});
+
+$(window).unload(function() {
+	if (!supports_html5_storage()) {
+		return;
+	}
+	save(slidenum);
+});
+
+}());
+
+function supports_html5_storage() {
+	try {
+		return 'localStorage' in window && window['localStorage'] !== null;
+	} catch (e) {
+		return false;
+	}
+}
