@@ -82,7 +82,10 @@ func main() {
 	<a target="_blank" href="http://golang.org/doc/install/">instale Go</a>,
 	então use
 	<a target="_blank" href="http://golang.org/cmd/go/">go get</a> para instalar
-	<a target="_blank" href="http://code.google.com/p/go-tour/">gotour</a>:
+  <a target="_blank" href="http://code.google.com/p/go-tour/">gotour</a>:
+  <pre>    go get code.google.com/p/go-tour/gotour</pre>
+  <p>
+  ou a versão em <a href="https://github.com/danvargas/go-tour-br" target="_blank">português do Brasil</a>
 	<pre>    go get github.com/danvargas/go-tour-br/gotour</pre>
 	<p>
 	e execute o binário resultante <code>gotour</code>.
@@ -309,7 +312,7 @@ func main() {
 	<p>
 	Dentro de uma função, a instrução <code>:=</code> de atribuição curta pode ser utilizada em lugar de um <code>var</code> declaração com o tipo implícito.
 	<p>
-	(Fora de uma função, cada construção começa com uma palavra-chave e <code>:=</code> não está disponível)
+	(Fora de uma função, cada estrutura começa com uma palavra-chave e <code>:=</code> não está disponível)
 <div>
 package main
 
@@ -382,7 +385,7 @@ func main() {
 <div class="slide">
 	<h2>For</h2>
 	<p>
-	Go tem apenas uma construção de laço, o <code>for</code>.
+	Go tem apenas uma estrutura de laço, o <code>for</code>.
 	<p>
 	O <code>for</code> básico parece com o que o de C ou Java fazem, 
 	exceto que as <code>( )</code> se foram (não são nem mesmo opcionais) e os <code>{ }</code> são obrigatórios.
@@ -885,7 +888,7 @@ func main() {
 <div class="slide">
 	<h2>Slices</h2>
 	<p>
-	Slices podem ser redimencionados, criando um valor de uma nova slice que aponta para a 
+	Slices podem ser redimencionadas, criando um valor de uma nova slice que aponta para a 
 	mesma matriz.
 	<p>
 	A expressão
@@ -927,8 +930,8 @@ func main() {
 	<pre>
 a := make([]int, 5)  // len(a)=5
 	</pre>
-	Slices tem comprimento e capacidade. A capacidade de uma slice é o comprimento máximo 
-	da slice pode crescer dentro da matriz subjacente.
+	Slices têm comprimento e capacidade. A capacidade de uma slice é o comprimento máximo 
+	da slice, podendo crescer dentro da matriz subjacente.
 	<p>
 	Para especificar uma capacidade, passe um terceiro argumento para <code>make</code>:
 	<p>
@@ -968,9 +971,9 @@ func printSlice(s string, x []int) {
 <div class="slide">
 	<h2>Slices</h2>
 	<p>
-	O valor zero de uma fatia é <code>nil</code>.
+	O valor zero de uma slice é <code>nil</code>.
 	<p>
-	Uma fatia nil tem um comprimento e capacidade de 0.
+	Uma slice nil tem um comprimento e capacidade de 0.
 	<p>
 	(Para saber mais sobre as slices, leia o artigo  
 	"<a target="_blank" href="http://golang.org/doc/articles/slices_usage_and_internals.html">Slices: internamente e usos</a>"
@@ -1047,7 +1050,7 @@ func main() {
 <div class="slide">
 	<h2>Range</h2>
 	<p>
-	O <code>range</code> forma do laço <code>for</code>
+	O <code>range</code> do laço <code>for</code>
 	itera sobre uma slice ou map.
 <div>
 package main
@@ -1067,10 +1070,10 @@ func main() {
 <div class="slide">
 	<h2>Range</h2>
 	<p>
-	Você pode ignorar a chave ou valor, atribuindo o <code>_</code>.
+	Você pode ignorar a variável chave ou de valor, atribuindo o <code>_</code>.
 	<p>
-	Se você só quer o índice, deixe sem o 
-	&ldquo;<code>, valor </code>&rdquo; inteiramente.
+	Se você só quiser o índice, deixe inteiramente sem o   
+	&ldquo;<code>, valor </code>&rdquo;.
 <div>
 package main
 
@@ -1081,8 +1084,8 @@ func main() {
 	for i := range pow {
 		pow[i] = 1&lt;&lt;uint(i)
 	}
-	for _, value := range pow {
-		fmt.Printf("%d\n", value)
+	for _, valor := range pow {
+		fmt.Printf("%d\n", valor)
 	}
 }
 </div>
@@ -1164,7 +1167,7 @@ func main() {
 	<p>
 	Switch sem uma condição é o mesmo que <code>switch true</code>.
 	<p>
-	Essa construção pode ser uma maneira limpa para escrever longas cadeias if-then-else.
+	Essa estrutura pode ser uma maneira limpa para escrever longas cadeias if-then-else.
 <div>
 package main
 
@@ -1190,7 +1193,7 @@ func main() {
 <div class="slide">
 	<h2>Exercício: Laços e Funções</h2>
 	<p>
-	Como uma forma simples de jogar com as funções e laços, implemente a função de raiz quadrada 
+	Como uma forma simples de brincar com as funções e laços, implemente a função de raiz quadrada 
 	usando o método de Newton.
 	<p>
 	Neste caso, o método de Newton é aproximar <code>Sqrt(x)</code>
