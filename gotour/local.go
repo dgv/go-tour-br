@@ -22,12 +22,12 @@ import (
 	"sync"
 
 	// Imports so that goinstall automatically installs them.
-	_ "github.com/danvargas/go-tour-br/pic"
-	_ "github.com/danvargas/go-tour-br/tree"
-	_ "github.com/danvargas/go-tour-br/wc"
+	_ "github.com/danielvargas/go-tour-br/pic"
+	_ "github.com/danielvargas/go-tour-br/tree"
+	_ "github.com/danielvargas/go-tour-br/wc"
 )
 
-const basePkg = "github.com/danvargas/go-tour-br/"
+const basePkg = "github.com/danielvargas/go-tour-br/"
 
 var (
 	httpListen = flag.String("http", "127.0.0.1:3999", "para ouvir em host:port")
