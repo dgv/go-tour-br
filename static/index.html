@@ -57,20 +57,14 @@ func main() {
 <div class="slide nocode appengineMode">
 	<h2>Go local</h2>
 	<p>
-	The tour is available in other languages:
-	O também está disponível em outras línguas:
+	O passeio também está disponível em outras línguas:
 	<ul>
 	<li><a href="http://tour.golang.org/">Inglês &mdash; English</a></li>
 	<li><a href="http://go-tour-cn.appspot.com/">Chinês &mdash; 普通话</a></li>
 	<li><a href="http://go-tour-jp.appspot.com/">Japonês &mdash; 日本語</a></li>
 	</ul>
 	<p>
-	(If you would like to translate the tour to another language, check
-	out the source from <code>https://code.google.com/p/go-tour</code>,
-	translate <code>static/index.html</code>, and then deploy it to App
-	Engine using the instructions in <code>appengine/README</code>.)
-	<p>
-	(Se você quiser traduzir o passeio para outra lingua, de uma olhada no
+	(Se você quiser traduzir o passeio para outra lingua, dê uma olhada no
 	código-fonte de <code>https://code.google.com/p/go-tour</code>, 
 	traduza <code>static/index.html</code>, e então suba-o para AppEngine
 	usando as instruções em <code>appengine/README</code>.)
@@ -132,8 +126,7 @@ func main() {
 	Este grupo de códigos em parênteses da importação, é a declaração de importação "consignada". Você também pode escrever várias declarações de importação assim: 
 	<pre>
 	import "fmt"
-	import "math"
-	</pre>
+	import "math"</pre>
 	mas é comum usar a forma consignada para eliminar a desordem.
 <pre class="source">package main
 
@@ -869,8 +862,7 @@ func main() {
 	da atribuição de uma matriz zerada e retornando uma slice que se refere a essa 
 	matriz:
 	<pre>
-a := make([]int, 5)  // len(a)=5
-	</pre>
+a := make([]int, 5)  // len(a)=5</pre>
 	Slices têm comprimento e capacidade. A capacidade de uma slice é o comprimento máximo 
 	da slice, podendo crescer dentro da matriz subjacente.
 	<p>
@@ -878,8 +870,7 @@ a := make([]int, 5)  // len(a)=5
 	<p>
 	<pre>
 b := make([]int, 0, 5)
-// len(b)=0, cap(b)=5
-	</pre>
+// len(b)=0, cap(b)=5</pre>
 	Slices podem crescer por "re-slicing" (até sua capacidade):
 	<p>
 	<pre>
@@ -1134,8 +1125,7 @@ func main() {
 	flutuante ou use uma conversão:
 	<pre>
 	z := float64(1)
-	z := 1.0
-	</pre>
+	z := 1.0</pre>
 
 <pre class="source">package main
 
@@ -1476,12 +1466,9 @@ func main() {
 	Um erro é algo que pode descrever-se como uma string de erro. 
 	A idéia é capturada pela predefinida interface built-in, o tipo <code>error</code>,
 	com seu método único <code>Error</code>, retornando uma string:
-	<pre>
-
-type error interface {
+	<pre>type error interface {
 	Error() string
-}
-	</pre>
+}</pre>
 
 	<p>
 	As várias rotinas de impressão no pacote <code>fmt</code> que automaticamente
@@ -1523,14 +1510,12 @@ func main() {
 	<p>
 	<a target="_blank" href="http://golang.org/pkg/net/http/">Pacote http</a> serve solicitações HTTP usando qualquer valor 
 	que implementa <code>http.Handler</code>:
-	<pre>
-package http
+	<pre>package http
 
 type Handler interface {
 	ServeHTTP(w ResponseWriter,
 	          r *Request)
-}
-	</pre>
+}</pre>
 	<p>
 	Neste exemplo, o tipo <code>Olá</code> implementa <code>http.Handler</code>.
 	<p>
@@ -1795,8 +1780,8 @@ func main() {
 	<p>
 	Canais são um conduto tipado através do qual você pode enviar e receber valores com o operador de canal, <code>&lt;-</code>.
 <pre>
-ch <- v    // v envia para o canal ch.
-v := <-ch  // Recebe do ch, e
+ch &lt;- v    // v envia para o canal ch.
+v := &lt;-ch  // Recebe do ch, e
            // atribui o valor de v
 </pre>
 	<p>
@@ -1833,7 +1818,7 @@ func main() {
         x, y := &lt;-c, &lt;-c  // recebe de c
 
 	fmt.Println(x, y, x + y)
-}}</pre>
+}</pre>
 </div>
 
 
@@ -2190,14 +2175,14 @@ var fetcher = &amp;fakeFetcher{
 
 <div id="workspace">
 	<div class="controls">
-		<div><a id="run" href="#run" title="Compile and Run">Run</a><a href="#more" id="more" title="Options">▼</a></div>
+		<div><a id="run" href="#run" title="Compile and Run">Executar</a><a href="#more" id="more" title="Options">▼</a></div>
 		<ul class="more">
 			<li><a href="#" id="reset">Reset Slide</a></li>
-			<li><a href="#" id="format">Format Source Code</a></li>
-			<li><a href="#" id="kill" class="localMode">Kill Program</a></li>
+			<li><a href="#" id="format">Formatar código-fonte</a></li>
+			<li><a href="#" id="kill" class="localMode">Matar Programa</a></li>
 			<li><hr></li>
-			<li><a href="#" id="togglesyntax">Syntax-Highlighting: off</a></li>
-			<li><a href="#" id="togglelineno">Line-Numbers: on</a></li>
+			<li><a href="#" id="togglesyntax">Syntax-Highlighting: desligado</a></li>
+			<li><a href="#" id="togglelineno">Números de linha: ligado</a></li>
 		</ul>
 	</div>
 

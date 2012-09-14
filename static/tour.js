@@ -17,7 +17,7 @@ function init() {
 	}
 
 	var $tocdiv = $('<div id="toc" />').insertBefore('#slides').hide();
-	$tocdiv.append($('<h2>Table of Contents</h2>'));
+	$tocdiv.append($('<h2>Índice analítico</h2>'));
 	var $toc = $('<ol />').appendTo($tocdiv);
 	$("#tocbtn").click(toggleToc);
 
@@ -111,10 +111,10 @@ function init() {
 	$('#togglesyntax').click(function() {
 		if (editor.getOption('theme') === 'default') {
 			editor.setOption('theme', 'plain');
-			$('#togglesyntax').text('Syntax-Highlighting: off');
+			$('#togglesyntax').text('Syntax-Highlighting: desligado');
 		} else {
 			editor.setOption('theme', 'default');
-			$('#togglesyntax').text('Syntax-Highlighting: on');
+			$('#togglesyntax').text('Syntax-Highlighting: ligado');
 		}
 		setcookie('theme', editor.getOption('theme'), 14);
 		$('.controls').removeClass('expanded');
@@ -124,10 +124,10 @@ function init() {
 	$('#togglelineno').click(function() {
 		if (editor.getOption('lineNumbers')) {
 			editor.setOption('lineNumbers', false);
-			$('#togglelineno').text('Line-Numbers: off');
+			$('#togglelineno').text('Números de linha: desligado');
 		} else {
 			editor.setOption('lineNumbers', true);
-			$('#togglelineno').text('Line-Numbers: on');
+			$('#togglelineno').text('Números de linha: ligado');
 		}
 		setcookie('lineno', editor.getOption('lineNumbers'), 14);
 		$('.controls').removeClass('expanded');
