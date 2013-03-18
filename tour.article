@@ -283,7 +283,7 @@ A struct literal denota um valor struct recém-alocado, ao enumerar os valores d
 
 Você pode listar apenas um subconjunto de campos usando o `Name:` sintaxe. (E a ordem dos campos nomeados é irrelevante.)
 
-O prefixo especial `&amp;` constrói um ponteiro para uma struct literal.
+O prefixo especial `&` constrói um ponteiro para uma struct literal.
 
 .play prog/struct-literals.go
 
@@ -372,7 +372,7 @@ Se você só quiser o índice, deixe inteiramente sem o  ", value".
 
 * Exercício: Slices
 
-Implemente `Pic`. Ela deve retornar uma slice de comprimento `dy`, cada elemento do qual é uma slice de `dx`8-bit inteiros sem sinal. Quando você executa o programa, ele irá exibir a sua imagem, interpretando os números inteiros como escala dos valores de cinza (bem, bluescale).
+Implemente `Pic`. Ela deve retornar uma slice de comprimento `dy`, cada elemento do qual é uma slice de `dx` 8-bit inteiros sem sinal. Quando você executa o programa, ele irá exibir a sua imagem, interpretando os números inteiros como escala dos valores de cinza (bem, bluescale).
 
 A escolha da imagem é com você. Funções interessantes incluem `x^y`, `(x+y)/2`, e `x*y`.
 
@@ -476,7 +476,7 @@ Switch cases avaliam casos de cima para baixo, parando quando um caso for bem-su
 	case f():
 	}
 
-não chamar`f` se `i==0`.)
+não chamar `f` se `i==0`.)
 
 #appengine: *Nota:* Tempo no playground Go sempre aparece para começar às
 #appengine: 2009-11-10 23:00:00 UTC, um valor cujo significado é deixado como um
@@ -486,7 +486,7 @@ não chamar`f` se `i==0`.)
 
 * Switch sem condição
 
-Switch sem uma condição é o mesmo que `switch true`.
+Switch sem uma condição é o mesmo que `switch`true`.
 
 Essa estrutura pode ser uma maneira limpa para escrever longas cadeias if-then-else.
 
@@ -548,7 +548,7 @@ Um valor de tipo de interface pode conter qualquer valor que implementa esses m�
 
 Um tipo implementa uma interface através da implementação dos métodos.
 
-_Não há declaração explícita de intenções.__
+_Não_há_declaração_explícita_de_intenções._
 
 As interfaces implícitas dissociam os pacotes de implementação que definem as interfaces: um não depende do outro.
 
@@ -659,7 +659,7 @@ Definir a seu próprio tipo `Image`, implemente [[http://golang.org/pkg/image/#I
 
 `ColorModel` deve retornar `color.RGBAModel`.
 
-`At` deve retornar uma cor; o valor `v` no gerador última imagem corresponde a `color.RGBA{v, v, 255, 255}` em um presente.
+`At` deve retornar uma cor; o valor `v` no gerador última imagem corresponde a `color.RGBA{v,`v,`255,`255}` em um presente.
 
 .play prog/exercise-images.go
 
@@ -669,9 +669,9 @@ Um padrão comum é um [[http://golang.org/pkg/io/#Reader][io.Reader]] que envol
 
 Por exemplo, a função [[http://golang.org/pkg/compress/gzip/#NewReader][gzip.NewReader]] recebe um `io.Reader` (um fluxo de dados compactado) e retorna um `*gzip.Reader` que também implementa `io.Reader` (um fluxo de dados descomprimidos).
 
-Implemente um `Leitorrot13` que implementa um `io.Reader` que leia a partir de um `io.Reader`,modificando o fluxo através da aplicação da cifra [[http://en.wikipedia.org/wiki/ROT13][ROT13]] de substituição para todos os caracteres alfabéticos.
+Implemente um `rot13Reader` que implementa um `io.Reader` que leia a partir de um `io.Reader`,modificando o fluxo através da aplicação da cifra [[http://en.wikipedia.org/wiki/ROT13][ROT13]] de substituição para todos os caracteres alfabéticos.
 
-O tipo `Leitorrot13` é fornecido para você. Você deve torná-lo um `io.Reader` através da implementação de seu método `Read`.
+O tipo `rot13Reader` é fornecido para você. Você deve torná-lo um `io.Reader` através da implementação de seu método `Read`.
 
 .play prog/exercise-rot-reader.go
 
@@ -689,7 +689,7 @@ inicia uma nova execução goroutine
 
 A avaliação de `f`, `x`, `y`, e `z` acontece na goroutine corrente e para a execução de f acontece em uma goroutine nova.
 
-Goroutines executam no mesmo espaço de endereço, para que o acesso à memória compartilhada seja sincronizada. O pacote de `[[http://golang.org/pkg/sync/][sync]]` fornece as primitivas úteis, embora você não vá precisar muito deles em Go, pois há outras primitivas. (Veja o próximo slide).
+Goroutines executam no mesmo espaço de endereço, para que o acesso à memória compartilhada seja sincronizada. O pacote [[http://golang.org/pkg/sync/][sync]] fornece as primitivas úteis, embora você não vá precisar muito deles em Go, pois há outras primitivas. (Veja o próximo slide).
 
 .play prog/goroutines.go
 
@@ -731,7 +731,7 @@ Um remetente pode `close` um canal para indicar que os valores não serão mais 
 
 `ok` é `false` se não há mais valores a receber e o canal está fechado.
 
-O laço `for i := range c`  recebe valores do canal repetidamente até que seja fechado.
+O laço `for`i`:=`range`c`  recebe valores do canal repetidamente até que seja fechado.
 
 *Nota:* Apenas o remetente deve fechar um canal, nunca o receptor. O envio em um canal fechado irá causar um pânico.
 
