@@ -2,42 +2,74 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+// +build !appengine
+
 package main
 
 import (
-	"bytes"
 	"flag"
 	"fmt"
 	"go/build"
-	"io/ioutil"
+	"io"
 	"log"
+	"net"
 	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
-	"regexp"
 	"runtime"
-	"strconv"
 	"strings"
-	"sync"
+	"time"
 
-	// Imports so that goinstall automatically installs them.
-	_ "github.com/danielvargas/go-tour-br/pic"
-	_ "github.com/danielvargas/go-tour-br/tree"
-	_ "github.com/danielvargas/go-tour-br/wc"
+	"code.google.com/p/go.talks/pkg/socket"
+
+	// Imports so that go build/install automatically installs them.
+	_ "code.google.com/p/go-tour/pic"
+	_ "code.google.com/p/go-tour/tree"
+	_ "code.google.com/p/go-tour/wc"
 )
 
-const basePkg = "github.com/danielvargas/go-tour-br/"
+const (
+	basePkg    = "code.google.com/p/go-tour/"
+	socketPath = "/socket"
+)
 
 var (
-	httpListen = flag.String("http", "127.0.0.1:3999", "para ouvir em host:port")
-	htmlOutput = flag.Bool("html", false, "processar a saída do programa como HTML")
+	httpListen  = flag.String("http", "127.0.0.1:3999", "host:port to listen on")
+	htmlOutput  = flag.Bool("html", false, "render program output as HTML")
+	openBrowser = flag.Bool("openbrowser", true, "open browser automatically")
 )
 
 var (
 	// a source of numbers, for naming temporary files
 	uniq = make(chan int)
+
+	// GOPATH containing the tour packages
+	gopath = os.Getenv("GOPATH")
+
+	httpAddr string
 )
+
+func isRoot(path string) bool {
+	_, err := os.Stat(filepath.Join(path, "tour.article"))
+	return err == nil
+}
+
+func findRoot() (string, error) {
+	ctx := build.Default
+	p, err := ctx.Import(basePkg, "", build.FindOnly)
+	if err == nil && isRoot(p.Dir) {
+		return p.Dir, nil
+	}
+	tourRoot := filepath.Join(runtime.GOROOT(), "misc", "tour")
+	ctx.GOPATH = tourRoot
+	p, err = ctx.Import(basePkg, "", build.FindOnly)
+	if err == nil && isRoot(tourRoot) {
+		gopath = tourRoot
+		return tourRoot, nil
+	}
+	return "", fmt.Errorf("could not find go-tour content; check $GOROOT and $GOPATH")
+}
 
 func main() {
 	flag.Parse()
@@ -50,31 +82,60 @@ func main() {
 	}()
 
 	// find and serve the go tour files
-	p, err := build.Default.Import(basePkg, "", build.FindOnly)
+	root, err := findRoot()
 	if err != nil {
-		log.Fatalf("Não foi possível encontrar os arquivos do passeio: %v", err)
+		log.Fatalf("Couldn't find tour files: %v", err)
 	}
-	root := p.Dir
-	log.Println("Servindo conteúdo de ", root)
+
+	log.Println("Serving content from", root)
+
+	host, port, err := net.SplitHostPort(*httpListen)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if host == "" {
+		host = "localhost"
+	}
+	if host != "127.0.0.1" && host != "localhost" {
+		log.Print(localhostWarning)
+	}
+	httpAddr = host + ":" + port
+
+	if err := initTour(root); err != nil {
+		log.Fatal(err)
+	}
+
+	fs := http.FileServer(http.Dir(root))
+	http.Handle("/favicon.ico", fs)
+	http.Handle("/static/", fs)
+	http.Handle("/talks/", fs)
+
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path == "/favicon.ico" || r.URL.Path == "/" {
-			fn := filepath.Join(root, "static", r.URL.Path[1:])
-			http.ServeFile(w, r, fn)
+		if r.URL.Path == "/" {
+			if err := renderTour(w); err != nil {
+				log.Println(err)
+			}
 			return
 		}
 		http.Error(w, "not found", 404)
 	})
-	http.Handle("/static/", http.FileServer(http.Dir(root)))
-	http.Handle("/talks/", http.FileServer(http.Dir(root)))
-	http.HandleFunc("/kill", kill)
 
-	if !strings.HasPrefix(*httpListen, "127.0.0.1") &&
-		!strings.HasPrefix(*httpListen, "localhost") {
-		log.Print(localhostWarning)
+	http.Handle(socketPath, socket.Handler)
+
+	err = serveScripts(filepath.Join(root, "js"), "socket.js")
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	log.Printf("Abra seu navegador web e visite http://%s/", *httpListen)
-	log.Fatal(http.ListenAndServe(*httpListen, nil))
+	go func() {
+		url := "http://" + httpAddr
+		if waitServer(url) && *openBrowser && startBrowser(url) {
+			log.Printf("A browser window should open. If not, please visit %s", url)
+		} else {
+			log.Printf("Please open your web browser and visit %s", url)
+		}
+	}()
+	log.Fatal(http.ListenAndServe(httpAddr, nil))
 }
 
 const localhostWarning = `
@@ -89,104 +150,61 @@ If you don't understand this message, hit Control-C to terminate this process.
 WARNING!  WARNING!  WARNING!
 `
 
-var running struct {
-	sync.Mutex
-	cmd *exec.Cmd
+type response struct {
+	Output string `json:"output"`
+	Errors string `json:"compile_errors"`
 }
 
-func stopRun() {
-	running.Lock()
-	if running.cmd != nil {
-		running.cmd.Process.Kill()
-		running.cmd = nil
-	}
-	running.Unlock()
-}
-
-func kill(w http.ResponseWriter, r *http.Request) {
-	stopRun()
-}
-
-var (
-	commentRe = regexp.MustCompile(`(?m)^#.*\n`)
-	tmpdir    string
-)
-
-func init() {
-	// find real temporary directory (for rewriting filename in output)
-	var err error
-	tmpdir, err = filepath.EvalSymlinks(os.TempDir())
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
-func compile(req *http.Request) (out []byte, err error) {
-	stopRun()
-
-	// x is the base name for .go, .6, executable files
-	x := filepath.Join(tmpdir, "compile"+strconv.Itoa(<-uniq))
-	src := x + ".go"
-	bin := x
-	if runtime.GOOS == "windows" {
-		bin += ".exe"
-	}
-
-	// rewrite filename in error output
-	defer func() {
-		if err != nil {
-			// drop messages from the go tool like '# _/compile0'
-			out = commentRe.ReplaceAll(out, nil)
+// environ returns an execution environment containing only GO* variables
+// and replacing GOPATH with the value of the global var gopath.
+func environ() (env []string) {
+	for _, v := range os.Environ() {
+		if !strings.HasPrefix(v, "GO") {
+			continue
 		}
-		out = bytes.Replace(out, []byte(src+":"), []byte("main.go:"), -1)
-	}()
-
-	// write body to x.go
-	body := []byte(req.FormValue("body"))
-	defer os.Remove(src)
-	if err = ioutil.WriteFile(src, body, 0666); err != nil {
-		return
+		if strings.HasPrefix(v, "GOPATH=") {
+			v = "GOPATH=" + gopath
+		}
+		env = append(env, v)
 	}
-
-	// build x.go, creating x
-	dir, file := filepath.Split(src)
-	out, err = run(dir, "go", "build", "-o", bin, file)
-	defer os.Remove(bin)
-	if err != nil {
-		return
-	}
-
-	// run x
-	return run("", bin)
+	return
 }
 
-// run executes the specified command and returns its output and an error.
-func run(dir string, args ...string) ([]byte, error) {
-	var buf bytes.Buffer
-	cmd := exec.Command(args[0], args[1:]...)
-	cmd.Dir = dir
-	cmd.Stdout = &buf
-	cmd.Stderr = cmd.Stdout
-
-	// Start command and leave in 'running'.
-	running.Lock()
-	if running.cmd != nil {
-		defer running.Unlock()
-		return nil, fmt.Errorf("já está rodando %s", running.cmd.Path)
+// waitServer waits some time for the http Server to start
+// serving url and returns whether it starts
+func waitServer(url string) bool {
+	tries := 20
+	for tries > 0 {
+		resp, err := http.Get(url)
+		if err == nil {
+			resp.Body.Close()
+			return true
+		}
+		time.Sleep(100 * time.Millisecond)
+		tries--
 	}
-	if err := cmd.Start(); err != nil {
-		running.Unlock()
-		return nil, err
-	}
-	running.cmd = cmd
-	running.Unlock()
-
-	// Wait for the command.  Clean up,
-	err := cmd.Wait()
-	running.Lock()
-	if running.cmd == cmd {
-		running.cmd = nil
-	}
-	running.Unlock()
-	return buf.Bytes(), err
+	return false
 }
+
+// startBrowser tries to open the URL in a browser, and returns
+// whether it succeed.
+func startBrowser(url string) bool {
+	// try to start the browser
+	var args []string
+	switch runtime.GOOS {
+	case "darwin":
+		args = []string{"open"}
+	case "windows":
+		args = []string{"cmd", "/c", "start"}
+	default:
+		args = []string{"xdg-open"}
+	}
+	cmd := exec.Command(args[0], append(args[1:], url)...)
+	return cmd.Start() == nil
+}
+
+// prepContent for the local tour simply returns the content as-is.
+func prepContent(r io.Reader) io.Reader { return r }
+
+// socketAddr returns the WebSocket handler address.
+func socketAddr() string { return "ws://" + httpAddr + socketPath }
