@@ -156,6 +156,8 @@ function init() {
 	$('#format').text(L('format'));
 	$('#kill').text(L('kill'));
 	$('#tocbtn').attr('title', L('toc'));
+	$('#run').attr('title', L('compile'));
+	$('#more').attr('title', L('more'));
 }
 
 function toggleToc() {
@@ -193,10 +195,28 @@ function show(i) {
 	// load stored code, or hide code box
 	if ($s.hasClass("nocode")) {
 		$('#workspace').hide();
+		$('#wrap').addClass('full-width');
 	} else {
+		$('#wrap').removeClass('full-width');
 		$('#workspace').show();
 		$output.empty();
-		editor.setValue(load(i) || $s.find('div.source').text());
+
+		// Load stored code from HTML source or from the pageData cache.
+		// Highlight "HL" lines if the cached data hasn't been changed.
+		var $src = $s.find('div.source');
+		var orig = $src.text().trim();
+		var loaded = load(i);
+		if (loaded && loaded != orig) {
+			editor.setValue(loaded); 
+		} else {
+			editor.setValue(orig); 
+			$src.find('b').closest('span').each(function() {
+				var n = $(this).attr('num')*1 - 1;
+				editor.setLineClass(n, null, 'highlightLine');
+			});
+			clearHighlightOnChange();
+		}
+
 		editor.focus();
 	}
 
@@ -211,7 +231,7 @@ function show(i) {
 }
 
 function reset() {
-	editor.setValue($(slide).find('div.source').text());
+	editor.setValue($(slide).find('div.source').text().trim());
 	save(slidenum);
 }
 
@@ -271,25 +291,33 @@ $(document).ready(function() {
 	document.onkeydown = pageUpDown;
 });
 
-$(window).unload(function() {
-	save(slidenum);
-});
-
-var runFunc, stopFunc;
+var transport; // set by initTour
+var running;
 
 function body() {
 	return editor.getValue();
 }
+
 function loading() {
 	$output.html('<pre><span class="loading">'+L('waiting')+'</span></pre>');
 }
+
 function run() {
+	kill();
 	loading();
-	stopFunc = runFunc(body(), $output.find("pre")[0]);
+	var output = highlightOutput(PlaygroundOutput($output.find("pre")[0]));
+	running = transport.Run(body(), output);
+}
+
+function highlightOutput(wrappedOutput) {
+	return function(write) {
+		if (write.Body) highlightErrors(write.Body);
+		wrappedOutput(write);
+	}
 }
 
 function kill() {
-	if (stopFunc) stopFunc();
+	if (running) running.Kill();
 }
 
 var seq = 0;
@@ -330,6 +358,10 @@ function highlightErrors(text) {
 		var line = result[1]*1-1;
 		editor.setLineClass(line, null, 'errLine');
 	}
+	clearHighlightOnChange();
+}
+
+function clearHighlightOnChange() {
 	editor.setOption('onChange', function() {
 		for (var i = 0; i < editor.lineCount(); i++) {
 			editor.setLineClass(i, null, null);
@@ -337,9 +369,6 @@ function highlightErrors(text) {
 		editor.setOption('onChange', null);
 	});
 }
-
-// Nasty hack to make this function available to playground.js and socket.js.
-window.highlightErrors = highlightErrors;
 
 function getcookie(name) {
 	if (document.cookie.length > 0) {
@@ -363,12 +392,8 @@ function setcookie(name, value, expire) {
 		((expire === undefined) ? '' : ';expires=' + expdate.toGMTString());
 }
 
-if (window.connectPlayground) {
-	runFunc = window.connectPlayground(window.socketAddr);
-} else {
-	// If this message is logged,
-	// we have neglected to include socket.js or playground.js.
-	console.log("No playground transport available.");
+window.initTour = function(t) {
+	transport = t
 }
 
 }());

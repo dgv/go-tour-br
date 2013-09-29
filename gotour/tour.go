@@ -6,6 +6,7 @@ package main
 
 import (
 	"bytes"
+	"flag"
 	"fmt"
 	"html/template"
 	"io"
@@ -15,10 +16,13 @@ import (
 	"path/filepath"
 	"time"
 
-	"code.google.com/p/go.talks/pkg/present"
+	"code.google.com/p/go.tools/present"
 )
 
-var tourContent []byte
+var (
+	article     = flag.String("article", "tour.article", "article to load for the tour")
+	tourContent []byte
+)
 
 // initTour loads tour.article and the relevant HTML templates from the given
 // tour root, and renders the template to the tourContent global variable.
@@ -27,10 +31,15 @@ func initTour(root string) error {
 	present.PlayEnabled = true
 
 	// Open and parse source file.
-	source := filepath.Join(root, "tour.article")
+	source := *article
 	f, err := os.Open(source)
 	if err != nil {
-		return err
+		// See if it exists in the content directory in the root.
+		source = filepath.Join(root, "content", source)
+		f, err = os.Open(source)
+		if err != nil {
+			return err
+		}
 	}
 	defer f.Close()
 	doc, err := present.Parse(prepContent(f), source, 0)
@@ -76,20 +85,21 @@ func nocode(s present.Section) bool {
 	return true
 }
 
-var commonScripts = []string{
+var scripts = []string{
 	"jquery.js",
 	"codemirror/lib/codemirror.js",
 	"codemirror/lib/go.js",
 	"lang.js",
+	"playground.js",
+	"tour.js",
 }
 
-// serveScripts registers an HTTP handler at /script.js that serves a
-// concatenated set of all the scripts specified by path relative to root.
-func serveScripts(root string, path ...string) error {
+// serveScripts registers an HTTP handler at /scripts.js that serves all the
+// scripts specified by the variable above, and appends a line that initializes
+// the tour with the specified transport.
+func serveScripts(root, transport string) error {
 	modTime := time.Now()
 	var buf bytes.Buffer
-	scripts := append(commonScripts, path...)
-	scripts = append(scripts, "tour.js")
 	for _, p := range scripts {
 		fn := filepath.Join(root, p)
 		b, err := ioutil.ReadFile(fn)
@@ -99,6 +109,7 @@ func serveScripts(root string, path ...string) error {
 		fmt.Fprintf(&buf, "\n\n// **** %s ****\n\n", filepath.Base(fn))
 		buf.Write(b)
 	}
+	fmt.Fprintf(&buf, "\ninitTour(new %v());\n", transport)
 	b := buf.Bytes()
 	http.HandleFunc("/script.js", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-type", "application/javascript")

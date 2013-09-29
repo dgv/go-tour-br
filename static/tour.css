@@ -50,7 +50,7 @@ h1 {
 	display: block;
 	position: absolute;
 	top: 0;
-	left: 60%;
+	right: 80px;
 	z-index: 10;
 }
 
@@ -179,9 +179,10 @@ ol li {
 }
 
 #output img {
-	margin: 5px;
+	margin: 0;
 	padding: 0;
 	border: none;
+	display: block;
 }
 
 pre, code {
@@ -227,6 +228,9 @@ div.source {
 
 .CodeMirror .errLine {
 	background: #FDD !important;
+}
+.CodeMirror .highlightLine {
+	background: #E0EBF5 !important;
 }
 
 #slides pre {
@@ -374,6 +378,9 @@ div.nav a:hover {
 	color: #375EAB;
 }
 
+.full-width {
+  width: 100% !important;
+}
 
 @media screen and (max-width : 1100px) {
 	#wrap {

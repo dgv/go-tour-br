@@ -21,7 +21,7 @@ import (
 	"strings"
 	"time"
 
-	"code.google.com/p/go.talks/pkg/socket"
+	"code.google.com/p/go.tools/playground/socket"
 
 	// Imports so that go build/install automatically installs them.
 	_ "code.google.com/p/go-tour/pic"
@@ -36,22 +36,23 @@ const (
 
 var (
 	httpListen  = flag.String("http", "127.0.0.1:3999", "host:port to listen on")
-	htmlOutput  = flag.Bool("html", false, "render program output as HTML")
 	openBrowser = flag.Bool("openbrowser", true, "open browser automatically")
 )
 
 var (
-	// a source of numbers, for naming temporary files
-	uniq = make(chan int)
-
 	// GOPATH containing the tour packages
 	gopath = os.Getenv("GOPATH")
 
 	httpAddr string
 )
 
+// isRoot reports whether path is the root directory of the tour tree.
+// To be the root, it must have content and template subdirectories.
 func isRoot(path string) bool {
-	_, err := os.Stat(filepath.Join(path, "tour.article"))
+	_, err := os.Stat(filepath.Join(path, "content", "tour.article"))
+	if err == nil {
+		_, err = os.Stat(filepath.Join(path, "template", "tour.tmpl"))
+	}
 	return err == nil
 }
 
@@ -73,13 +74,6 @@ func findRoot() (string, error) {
 
 func main() {
 	flag.Parse()
-
-	// source of unique numbers
-	go func() {
-		for i := 0; ; i++ {
-			uniq <- i
-		}
-	}()
 
 	// find and serve the go tour files
 	root, err := findRoot()
@@ -122,7 +116,7 @@ func main() {
 
 	http.Handle(socketPath, socket.Handler)
 
-	err = serveScripts(filepath.Join(root, "js"), "socket.js")
+	err = serveScripts(filepath.Join(root, "js"), "SocketTransport")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -155,23 +149,24 @@ type response struct {
 	Errors string `json:"compile_errors"`
 }
 
-// environ returns an execution environment containing only GO* variables
-// and replacing GOPATH with the value of the global var gopath.
+func init() {
+	socket.Environ = environ
+}
+
+// environ returns the original execution environment with GOPATH
+// replaced (or added) with the value of the global var gopath.
 func environ() (env []string) {
 	for _, v := range os.Environ() {
-		if !strings.HasPrefix(v, "GO") {
-			continue
+		if !strings.HasPrefix(v, "GOPATH=") {
+			env = append(env, v)
 		}
-		if strings.HasPrefix(v, "GOPATH=") {
-			v = "GOPATH=" + gopath
-		}
-		env = append(env, v)
 	}
+	env = append(env, "GOPATH="+gopath)
 	return
 }
 
 // waitServer waits some time for the http Server to start
-// serving url and returns whether it starts
+// serving url. The return value reports whether it starts.
 func waitServer(url string) bool {
 	tries := 20
 	for tries > 0 {
