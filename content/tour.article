@@ -25,12 +25,12 @@ O passeio é dividido em três seções: conceitos básicos, métodos e interfac
 
 No final de cada seção há uma série de exercícios para você completar.
 
-O passeio é interativo. Clique no botão Executar agora (ou pressione Shift-Enter) para compilar e executar o programa em 
+O passeio é interativo. Clique no botão Executar agora (ou pressione Shift-Enter) para compilar e executar o programa em
 #appengine: um servidor remoto.
 seu computador.
 O resultado é exibido abaixo do código.
 
-Estes programas exemplo demonstrarão os diferentes aspectos de Go. Os programas do passeio são feitos para serem pontos de partida para a sua própria experimentação.  
+Estes programas exemplo demonstrarão os diferentes aspectos de Go. Os programas do passeio são feitos para serem pontos de partida para a sua própria experimentação.
 
 Edite o programa e execute-o novamente.
 
@@ -43,33 +43,33 @@ Você também pode navegar usando o menu do marcador "Go" no topo da página.
 
 O passeio também está disponível em outras línguas:
 
-- [[http://tour.golang.org/][Inglês — English]]
 - [[http://go-tour-ca.appspot.com/][Catalão — Català]]
+- [[http://go-tour-zh.appspot.com/][Chinês — 普通话]]
 - [[http://go-tour-es.appspot.com/][Espanhol — Español]]
 - [[http://go-tour-fr.appspot.com/][Francês - Français]]
 - [[http://go-tour-he.appspot.com/][Hebraico — עִבְרִית]]
+- [[http://tour.golang.org/][Inglês — English]]
 - [[http://go-tour-jp.appspot.com/][Japonês — 日本語]]
+- [[http://go-tour-kr.appspot.com/][Koreano — 한국어]]
 - [[http://go-tour-ro.appspot.com/][Romeno - Română]]
-- [[http://go-tour-zh.appspot.com/][Chinês — 普通话]]
-
-Clique no botão "próximo" ou aperte PageDown para continuar.
+- [[http://tur.golang.org.tr/][Turco - Türkçe]]
 
 #appengine: * O Playground Go
-#appengine: 
+#appengine:
 #appengine: Este passeio foi construído sobre o [[http://play.golang.org/][Go Playground]], um
 #appengine: serviço web executado sobre servidores de [[http://golang.org/][golang.org]].
-#appengine: 
+#appengine:
 #appengine: O serviço recebe um programa Go, compila, linka, e executa o programa dentro
 #appengine: de uma "sandbox", em seguida, devolve o resultado.
-#appengine: 
+#appengine:
 #appengine: Existem limitações para os programas que podem ser executados no playground:
-#appengine: 
+#appengine:
 #appengine: - O playground pode usar a maior parte da biblioteca padrão, com algumas exceções, notadamente ausentes são as partes de rede e acesso ao sistema de arquivos. Portanto, a única comunicação de um programa no playground tem para o mundo exterior é escrevendo para a saída padrão e erro padrão.
 #appengine: - No playground, o horário começa em 2009-11-10 23:00:00 UTC (o significado da determinação desta data é um exercício para o leitor). Isto torna mais fácil aos programas de cache, dando-lhes uma saída determinista.
 #appengine: - Há também limites para o tempo de execução, de CPU e uso de memória, e o programa é restrito a execução em um único segmento (mas pode usar muitas goroutines).
 #appengine:
 #appengine: O playground utiliza a versão mais recente e estável de Go.
-#appengine: 
+#appengine:
 #appengine: .play prog/tour/sandbox.go
 
 * Pacotes
@@ -84,18 +84,18 @@ Por convenção, o nome do pacote é o mesmo que o último elemento do caminho d
 
 #appengine: *Nota*: o ambiente em que esses programas são executados é
 #appengine: determinístico, então rand.Intn sempre retornará o mesmo número.
-#appengine: 
+#appengine:
 #appengine: (Para ver um número diferente, a semente do gerador de números; veja [[http://golang.org/pkg/math/rand/#Seed][`rand.Seed`]].)
 
 .play prog/tour/packages.go
 
 * Importações
 
-Este grupo de códigos em parênteses da importação, é a declaração de importação "consignada". Você também pode escrever várias declarações de importação assim: 
+Este grupo de códigos em parênteses da importação, é a declaração de importação "consignada". Você também pode escrever várias declarações de importação assim:
 
 	import "fmt"
 	import "math"
-	
+
 .play prog/tour/imports.go
 
 * Nomes exportados
@@ -179,19 +179,19 @@ Dentro de uma função a instrução de atribuição curta `:=` pode ser utiliza
 Os tipos básicos de Go são
 
 	bool
-	
+
 	string
-	
+
 	int  int8  int16  int32  int64
 	uint uint8 uint16 uint32 uint64 uintptr
-	
+
 	byte // pseudônimo para uint8
-	
+
 	rune // pseudônimo para int32
 	     // representa um ponto de código Unicode
-	
+
 	float32 float64
-	
+
 	complex64 complex128
 
 .play prog/tour/basic-types.go
@@ -209,7 +209,7 @@ Constantes podem ser seqüências de caracteres, booleanos, ou valores numérico
 As constantes numéricas são _valores_ de alta precisão.
 
 Uma constante sem tipo tem o tipo necessário para o seu contexto.
-	
+
 Tente imprimir `needInt(Big)` também.
 
 .play prog/tour/numeric-constants.go
@@ -255,7 +255,7 @@ Como o `for`, a instrução `if` pode começar com uma breve declaração antes 
 Variáveis ​​declaradas pela instrução são válidas somente no escopo até o final do `if`.
 
 (Tente usar `v` na última instrução `return`.)
-	
+
 .play prog/tour/if-with-a-short-statement.go
 
 * If e else
@@ -344,15 +344,15 @@ Slices podem ser re-fatiados, criando um valor de uma nova slice que aponta para
 A expressão
 
 	s[lo:hi]
-	
+
 avalia para uma slice de elementos de `lo` através de `hi-1`, inclusive. Assim
-	
+
 	s[lo:lo]
-	
+
 é vazia e
-	
+
 	s[lo:lo+1]
-	
+
 tem um elemento.
 
 .play prog/tour/slicing-slices.go
@@ -360,7 +360,7 @@ tem um elemento.
 * Fazendo slices
 
 Slices são criados com a função `make`. Ele funciona através da atribuição de uma matriz zerada e retornando uma slice que se refere a essa matriz:
-	
+
 	a := make([]int, 5)  // len(a)=5
 
 Para especificar uma capacidade, passe um terceiro argumento para `make`:
@@ -407,7 +407,7 @@ A escolha da imagem é com você. Funções interessantes incluem `x^y`, `(x+y)/
 (Você precisa usar um loop para alocar cada `[]uint8` dentro do `[][]uint8`.)
 
 (Utilize `uint8(intValue)` para converter entre os tipos.)
-	
+
 .play prog/tour/exercise-slices.go
 
 * Maps
@@ -613,7 +613,7 @@ e faça-o dar `error`, dando-lhe um
 
 tal método que `ErrNegativeSqrt(-2).Error()` retorne `"cannot`Sqrt`negative`number:`-2"`.
 
-*Nota:* uma chamada para `fmt.Print(e)` dentro do método `Error` irá enviar o programa em um laço infinito. Você pode 
+*Nota:* uma chamada para `fmt.Print(e)` dentro do método `Error` irá enviar o programa em um laço infinito. Você pode
 evitar isso através da conversão `e` em primeiro lugar: `fmt.Print(float64(e))`. Por que?
 
 Mude sua função `Sqrt` para retornar um valor `ErrNegativeSqrt` quando receber um número negativo.
@@ -625,7 +625,7 @@ Mude sua função `Sqrt` para retornar um valor `ErrNegativeSqrt` quando receber
 O [[http://golang.org/pkg/net/http/][pacote http]] serve requisições HTTP usando qualquer valor que implementa `http.Handler`:
 
 	package http
-	
+
 	type Handler interface {
 		ServeHTTP(w ResponseWriter, r *Request)
 	}
@@ -645,7 +645,7 @@ Visite [[http://localhost:4000/][http://localhost:4000/]] para ver a saudação.
 Implementar os seguintes tipos e definir métodos ServeHTTP sobre eles. Registrá-los para lidar com caminhos específicos no seu servidor web.
 
 	type String string
-	
+
 	type Struct struct {
 		Greeting string
 		Punct    string
@@ -664,7 +664,7 @@ Por exemplo, você deve ser capaz de registrar manipuladores usando:
 O [[http://golang.org/pkg/image/#Image][package image]] define a interface `Image`:
 
 	package image
-	
+
 	type Image interface {
 		ColorModel() color.Model
 		Bounds() Rectangle
@@ -838,27 +838,25 @@ Modifique a função `Crawl` para buscar URLs em paralelo, sem buscar a mesma UR
 * Para onde ir a partir daqui...
 
 #appengine: Você pode começar por
-#appengine: [[http://golang.org/doc/install/][installing Go]] ou baixar o
+#appengine: [[http://www.golangbr.org/doc/instalacao][instalando Go]] ou baixar o
 #appengine: [[http://code.google.com/appengine/downloads.html#Google_App_Engine_SDK_for_Go][Go App Engine SDK]].
 
-#appengine: Uma vez que você tenha Go em sua máquina,
-The
-[[http://golang.org/doc/][Go Documentation]] é um ótimo lugar para  
-#appengine: continue.
-start.
-Ele contém referências, tutoriais, vídeos, e muito mais.
+#appengine: Uma vez que você tenha Go em sua máquina, a [[http://golangbr.org/doc/][Documentação Go]] é um ótimo lugar para
+#appengine: continuar.
+começar.
+Ela contém referências, tutoriais, vídeos, e muito mais.
 
-Para aprender como organizar e trabalharo com código Go, veja [[http://www.youtube.com/watch?v=XCsL89YtqCs][this screencast]] ou leia  [[http://golang.org/doc/code.html][How to Write Go Code]].
+Para aprender como organizar e trabalhar com código Go, veja [[http://www.youtube.com/watch?v=XCsL89YtqCs][este screencast]] ou leia  [[http://golangbr.org/doc/codigo][Como escrever código Go]].
 
-Se precisar de ajuda com a biblioteca padrão, consulte a [[http://golang.org/pkg/][package reference]]. Para obter ajuda com a linguagem em si, você pode ser surpreendido ao encontrar a [[http://golang.org/ref/spec][Language Spec]], é bastante legível.
+Se precisar de ajuda com a biblioteca padrão, consulte a [[http://golangbr.org/pkg/][referência de pacotes]]. Para obter ajuda com a linguagem em si, você pode ser surpreendido ao encontrar a [[http://golangbr.org/ref/spec][Especificação da Linguagem]], é bastante compreensivel.
 
 Para explorar ainda mais a concorrência no modelo de Go, consulte a [[http://golang.org/doc/codewalk/sharemem/][Share Memory by Communicating]] codewalk.
 
 O [[http://golang.org/doc/codewalk/functions/][First Class Functions in Go]] codewalk dá uma perspectiva interessante sobre tipos de funções em Go.
 
-O [[http://blog.golang.org/][Go Blog]] tem um grande arquivo de artigos informativos de Go.
+O [[http://blog.golang.org/][Go Blog]] tem um grande arquivo de artigos informativos de Go. Além do [[http://blog.golangbr.org/][Blog Golang Brasil]] da comunidade brasileira.
 
 Participe da lista de discussão brasileira [[http://groups.google.com/group/golang-brasil][Golang Brasil]].
 
-Visite [[http://golang.org][golang.org]] para mais.
+Visite [[http://golangbr.org][golangbr.org]] para mais.
 
