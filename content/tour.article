@@ -473,7 +473,7 @@ Funções são valores também.
 
 E as funções são closures completos.
 
-A função `adder` retorna um closure. Cada closure é obrigado a própria variável `sum`.
+A função `adder` retorna um closure. Cada closure abriga sua própria variável `sum`.
 
 .play prog/tour/function-closures.go
 
