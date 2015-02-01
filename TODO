@@ -5,16 +5,20 @@ should be added (prefixed by -). It should be kept up-to-date with tour.article.
 * Go local
 * Packages
 * Imports
+- "Imported but not used" errors (later perhaps)
 * Exported names
 * Functions
 * Functions continued
 * Multiple results
 * Named results
+- Variables (single declaration first)
 * Variables
 * Variables with initializers
 * Short variable declarations
 * Basic types
-- The zero value
+* Type inference
+* Type conversions
+* Zero values
 * Constants
 * Numeric Constants
 * For
@@ -30,16 +34,17 @@ should be added (prefixed by -). It should be kept up-to-date with tour.article.
 * Pointers
 * Struct Literals
 * The new function
-- Arrays
+* Arrays
 * Slices
 * Slicing slices
 * Making slices
-- Append
+* Append
 - Copy
 * Nil slices
 * Range
 * Range continued
 - The blank identifier
+- Slices of slices.
 * Exercise: Slices
 * Maps
 * Map literals
@@ -55,6 +60,7 @@ should be added (prefixed by -). It should be kept up-to-date with tour.article.
 * Switch with no condition
 - Complex numbers
 * Advanced Exercise: Complex cube roots
+- the type keyword
 * Methods and Interfaces
 * Methods
 * Methods continued
@@ -88,7 +94,7 @@ should be added (prefixed by -). It should be kept up-to-date with tour.article.
 * Exercise: Equivalent Binary Trees
 * Exercise: Web Crawler
 - More language features
-- Defer
+* Defer
 - Panic and recover
 - init functions
 - Tools

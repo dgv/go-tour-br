@@ -1,0 +1,261 @@
+Métodos e interfaces
+Esta lição cobre métodos e interfaces, construções que definem objetos e seus comportamentos.
+
+Os Autores de Go
+http://golang.org
+
+* Métodos
+
+Go não tem classes. No entanto, você pode definir métodos em tipos struct.
+
+O _método_receptor_ aparece em sua lista de argumentos entre a própria palavra-chave `func` e o nome do método.
+
+.play methods/methods.go
+
+* Métodos continuação
+
+Na verdade, você pode definir um método em _qualquer_ tipo que você definir em seu package, e não apenas structs.
+
+Você não pode definir um método em um tipo de um outro pacote, ou em um tipo básico.
+
+.play methods/methods-continued.go
+
+* Métodos com ponteiro receptor
+
+Os métodos podem ser associados com um tipo nomeado ou um ponteiro para um tipo nomeado.
+
+Nós só vimos dois métodos `Abs`. Um no tipo ponteiro `*Vertex` e outro no valor do tipo `MyFloat`.
+
+Há duas razões para usar um receptor de ponteiro. Primeiro, para evitar copiar o valor de cada chamada de método (mais eficiente se o tipo de valor é uma estrutura grande). Em segundo lugar, de modo que o método possa modificar o valor que o seu receptor aponta.
+
+Tente mudar as declarações dos métodos `Abs` e `Scale` para usar `Vertex` como o receptor, ao invés de `*Vertex`.
+
+O método `Scale` não tem efeito sobre `v` é um `Vertex`. `Scale` muda `v`. Quando `v` é um tipo valor (não-ponteiro), o método vê uma cópia do `Vertex` e não pode sofrer mutação do valor original.
+
+`Abs` funciona de qualquer maneira. Ele apenas lê `v`. Não importa se ele está lendo o valor original (através de um ponteiro) ou uma cópia desse valor.
+
+.play methods/methods-with-pointer-receivers.go
+
+* Interfaces
+
+Um tipo de interface é definida por um conjunto de métodos.
+
+Um valor de tipo de interface pode conter qualquer valor que implementa esses métodos.
+
+*Observe:* Tem um erro no exemple na linha22.
+`Vertex` (do tipo valor) não satisfaz `Abser` porque
+o método `Abs` é definido apenas em `*Vertex` (do tipo ponteiro)
+
+.play methods/interfaces.go
+
+* Interfaces são satisfeitas implicitamente
+
+Um tipo implementa uma interface através da implementação dos métodos.
+
+_Não_há_declaração_explícita_de_intenções._
+
+As interfaces implícitas dissociam os pacotes de implementação que definem as interfaces: um não depende do outro.
+
+Além disso, incentiva a definição de interfaces precisas, porque você não tem que encontrar todas as implementações e marcá-las com o novo nome de interface.
+
+[[http://golang.org/pkg/io/][Pacote io]] define `Reader` e `Writer`; você não precisa implementar.
+
+.play methods/interfaces-are-satisfied-implicitly.go
+
+* Stringers
+
+Uma das interfaces mais ubíqua é a [[//golang.org/pkg/fmt/#Stringer][`Stringer`]] definida pelo pacote [[//golang.org/pkg/fmt/][`fmt`]].
+
+	type Stringer interface {
+		String() string
+	}
+
+A `Stringer` é um tipo que pode descrever-se como uma string. O pacote `fmt`
+(e muitos outros) olham para essa interface para mostrar valores.
+
+.play methods/stringer.go
+
+* Exercício: Stringers
+
+Faça o tipo `IPAddr` implementar `fmt.Stringer` para mostrar o endereço como
+um quadrângulo pontilhado.
+
+Por exemplo, `IPAddr{1,`2,`3,`4}` deve ser mostrado como `"1.2.3.4"`.
+
+.play methods/exercise-stringer.go
+
+* Erros
+
+Programas Go expressam estados de erro com valores 'error`.
+
+O tipo `error` é uma interface built-in simliar a `fmt.Stringer`:
+
+	type error interface {
+		Error() string
+	}
+
+(Tal como acontece com `fmt.Stringer`, o pacote `fmt` procura a interface  de `error` quando
+mostra valores.)
+
+Funções frequentemente retornam um valor `error` e a chamada do código deve lidar com erros
+testando se o erro é igual a `nil`.
+
+	i, err := strconv.Atoi("42")
+	if err != nil {
+		fmt.Printf("Não conseguiu converter número: %v\n", err)
+	}
+	fmt.Println("Inteiro convertido:", i)
+
+Um `error` nil indica sucesso; um `error` não-nil denota fracasso.
+
+.play methods/errors.go
+
+* Exercício: Erros
+
+Copie o sua função `Sqrt` dos exercícios anteriores e modifique-o para retornar um valor de `error`.
+
+`Sqrt` deve retornar um valor de erro não-nil quando recebe um número negativo, pois não suporta números complexos.
+
+Crie um novo tipo
+
+	type ErrNegativeSqrt float64
+
+e faça-o dar `error`, dando-lhe um
+
+	func (e ErrNegativeSqrt) Error() string
+
+tal método que `ErrNegativeSqrt(-2).Error()` retorne `"cannot`Sqrt`negative`number:`-2"`.
+
+*Nota:* uma chamada para `fmt.Print(e)` dentro do método `Error` irá enviar o programa em um laço infinito. Você pode
+evitar isso através da conversão `e` em primeiro lugar: `fmt.Print(float64(e))`. Por que?
+
+Mude sua função `Sqrt` para retornar um valor `ErrNegativeSqrt` quando receber um número negativo.
+
+.play methods/exercise-errors.go
+
+* Leitores
+
+O pacote `io` especifica a interface `io.Reader`,
+que representa o fim da leitura de um fluxo de dados.
+
+A biblioteca padrão contém [[http://golang.org/search?q=Read#Global][várias implementações]] destas interfaces, incluindo arquivos, conexões de rede, compressores, cifras e outros.
+
+
+The `io.Reader` interface has a `Read` method:
+
+	func (T) Read(b []byte) (n int, err error)
+
+`Read` populates the given byte slice with data and returns the number of bytes
+populated and an error value. It returns an `io.EOF` error when the stream
+ends.
+
+A interface `io.Reader` tem um método `Read`:
+
+  func (T) Read(b []byte) (n int, err error)
+
+`Read` popula um slice de bytes passados com dados e retorna o número de bytes
+populados e um valor de erro. Este retorna um erro`io.EOF` quando o fluxo termina.
+
+O exemplo de código cria um
+[[//golang.org/pkg/strings/#Reader][`strings.Reader`]].
+e consome sua saída 8 bytes cade vez.
+
+.play methods/reader.go
+
+* Exercício: Leitores
+
+Implemente um tipo `Reader` que emita um fluxo infinito do carácter ASCII
+`'A'`.
+
+.play methods/exercise-reader.go
+
+* Exercício: Leitor Rot13
+
+Um padrão comum é um [[http://golang.org/pkg/io/#Reader][io.Reader]] que envolve outro `io.Reader`, modificando o fluxo de alguma forma.
+
+Por exemplo, a função [[http://golang.org/pkg/compress/gzip/#NewReader][gzip.NewReader]] recebe um `io.Reader` (um fluxo de dados compactado) e retorna um `*gzip.Reader` que também implementa `io.Reader` (um fluxo de dados descomprimidos).
+
+Implemente um `rot13Reader` que implementa um `io.Reader` que leia a partir de um `io.Reader`,modificando o fluxo através da aplicação da cifra [[http://en.wikipedia.org/wiki/ROT13][ROT13]] de substituição para todos os caracteres alfabéticos.
+
+O tipo `rot13Reader` é fornecido para você.
+
+Você deve torná-lo um `io.Reader` através da implementação de seu método `Read`.
+
+.play methods/exercise-rot-reader.go
+
+* Servidores Web
+
+O [[http://golang.org/pkg/net/http/][pacote http]] serve requisições HTTP usando qualquer valor que implementa `http.Handler`:
+
+	package http
+
+	type Handler interface {
+		ServeHTTP(w ResponseWriter, r *Request)
+	}
+
+Neste exemplo, o tipo `Hello` implementa `http.Handler`.
+
+Visite [[http://localhost:4000/][http://localhost:4000/]] para ver a saudação.
+
+#appengine: *Nota:* Este exemplo não será executado através da interface web-based
+#appengine: do passeio. Para tentar escrever servidores web que você possa querer
+#appengine: [[http://golang.org/doc/install/][Install Go]].
+
+.play methods/web-servers.go
+
+* Exercício: manipuladores HTTP
+
+Implementar os seguintes tipos e definir métodos ServeHTTP sobre eles. Registrá-los para lidar com caminhos específicos no seu servidor web.
+
+	type String string
+
+	type Struct struct {
+		Greeting string
+		Punct    string
+		Who      string
+	}
+
+Por exemplo, você deve ser capaz de registrar manipuladores usando:
+
+	http.Handle("/string", String("I'm a frayed knot."))
+	http.Handle("/struct", &Struct{"Hello", ":", "Gophers!"})
+
+.play methods/exercise-http-handlers.go
+
+* Imagens
+
+O [[http://golang.org/pkg/image/#Image][package image]] define a interface `Image`:
+
+	package image
+
+	type Image interface {
+		ColorModel() color.Model
+		Bounds() Rectangle
+		At(x, y int) color.Color
+	}
+
+(Veja [[http://golang.org/pkg/image/#Image][a documentação]] para todos os detalhes)
+
+Além disso, `color.Color` e `color.Model` são interfaces, mas vamos ignorar isso usando as implementações predefinidas `color.RGBA` e `color.RGBAModel`.
+
+.play methods/images.go
+
+* Exercício: Imagens
+
+Lembre-se o gerador de imagem que escrevi anteriormente? Vamos escrever outro, mas desta vez ele irá retornar uma implementação de `image.Image` em vez de uma slice de dados.
+
+Definir a seu próprio tipo `Image`, implemente [[http://golang.org/pkg/image/#Image][os métodos necessários]], e chame `pic.ShowImage`.
+
+`Bounds` deve retornar um `image.Rectangle`, como `image.Rect(0,`0,`w,`h)`.
+
+`ColorModel` deve retornar `color.RGBAModel`.
+
+`At` deve retornar uma cor; o valor `v` no gerador última imagem corresponde a `color.RGBA{v,`v,`255,`255}` em um presente.
+
+.play methods/exercise-images.go
+
+* Parabéns!
+
+Você terminou esta lição!
+
+Você pode voltar para lista de [[/list][módulos]] para achar o que aprender em seguida, ou continuar com a [[javascript:click('.next-page')][próxima lição]].

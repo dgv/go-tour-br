@@ -1,0 +1,161 @@
+Concorrência
+Go dispões de estruturas de concorrência como parte do núcleo da linguagem. Estas lições apresentaram elas e darão alguns examplos sobre como usa-las.
+
+Os Autores de Go
+http://golang.org
+
+* Goroutines
+
+Uma _goroutine_ é um segmento leve e gerenciado pelo runtime de Go.
+
+	go f(x, y, z)
+
+inicia uma nova execução goroutine
+
+	f(x, y, z)
+
+A avaliação de `f`, `x`, `y`, e `z` acontece na goroutine corrente e para a execução de f acontece em uma goroutine nova.
+
+Goroutines executam no mesmo espaço de endereço, para que o acesso à memória compartilhada seja sincronizada. O pacote [[http://golang.org/pkg/sync/][sync]] fornece as primitivas úteis, embora você não vá precisar muito deles em Go, pois há outras primitivas. (Veja o próximo slide).
+
+.play concurrency/goroutines.go
+
+* Canais
+
+Canais são um conduto tipado através do qual você pode enviar e receber valores com o operador de canal, `<-`.
+
+	ch <- v    // v envia para o canal ch.
+	v := <-ch  // Recebe do ch, e
+	           // atribui o valor de v.
+
+(Os dados fluem na direção da seta.)
+
+Como maps e slices, os canais devem ser criados antes de se usar:
+
+	ch := make(chan int)
+
+Por padrão, enviam e recebem bloco até o outro lado estar pronto. Isso permite que goroutines sincronizem sem bloqueios explícitos ou variáveis ​​de condição.
+
+.play concurrency/channels.go
+
+* Canais Bufferizados
+
+Os canais podem ser _bufferizados_. Fornecendo o tamanho do buffer como o segundo argumento para `make` para inicializar um canal bufferizado:
+
+	ch := make(chan int, 100)
+
+Envia para um bloco de canais bufferizados apenas quando o buffer está cheio. Recebe bloco quando o buffer está vazio..
+
+Modifique o exemplo, enchendo o buffer e veja o que acontece.
+
+.play concurrency/buffered-channels.go
+
+* Range e Close
+
+Um remetente pode `close` um canal para indicar que os valores não serão mais enviados. Receptores podem testar se um canal foi fechado através da atribuição de um segundo parâmetro para a expressão de recepção: depois
+
+	v, ok := <-ch
+
+`ok` é `false` se não há mais valores a receber e o canal está fechado.
+
+O laço `for`i`:=`range`c`  recebe valores do canal repetidamente até que seja fechado.
+
+*Nota:* Apenas o remetente deve fechar um canal, nunca o receptor. O envio em um canal fechado irá causar um pânico.
+
+*Outra*nota*: Canais não são como arquivos, você geralmente não precisa fechá-los. O encerramento só é necessário quando o receptor precisa saber que não há mais valores chegando, como para terminar um laço `range`.
+
+.play concurrency/range-and-close.go
+
+* Select
+
+A instrução `select` permite uma espera na goroutine sobre as operações de comunicação múltiplas.
+
+O bloco `select` aguarda até que um de seus cases possam executar, então ele executa esse case. Ele escolhe um ao acaso se vários estiverem prontos.
+
+.play concurrency/select.go
+
+* Selection Padrão
+
+O case `default` em um `select`  é executado se nenhum outro caso está pronto.
+
+Utilize um case `default` para tentar um enviar ou receber sem bloqueio:
+
+	select {
+	case i := <-c:
+		// use i
+	default:
+		// recebendo c bloquearia
+	}
+
+.play concurrency/default-selection.go
+
+* Exercício: árvores binárias equivalentes
+
+Pode haver muitas árvores binárias diferentes com a mesma seqüência de valores armazenados nas folhas. Por exemplo, aqui estão duas árvores binárias que armazenam a seqüência 1, 1, 2, 3, 5, 8, 13.
+
+.image /content/img/tree.png
+
+A função para verificar se duas árvores binárias armazenam a mesma seqüência é bastante complexa, na maioria das linguagens. Vamos usar a simultaneidade de Go e canais para escrever uma solução simples.
+
+Este exemplo utiliza o pacote `tree`, o qual define o tipo:
+
+	type Tree struct {
+		Left  *Tree
+		Value int
+		Right *Tree
+	}
+
+* Exercício: árvores binárias equivalentes
+
+*1.* Implemente a função `Walk`.
+
+*2.* Teste a função `Walk`.
+
+A função `tree.New(k)` constrói uma árvore binária aleatoriamente estruturada segurando os valores `k`, `2k`, `3k`, ..., `10k`.
+
+Crie um novo canal `ch` e lance o walker:
+
+	go Walk(tree.New(1), ch)
+
+Então leia e imprima 10 valores do canal. Deve ser os números 1, 2, 3, ..., 10.
+
+*3.* Implementar a função `Same` usando `Walk` para determinar se `t1` e `t2` armazenam os mesmos valores.
+
+*4.* Teste a função `Mesma`.
+
+`Same(tree.New(1),`tree.New(1))` deve retornar true, e `Same(tree.New(1),`tree.New(2))` deve retornar false.
+
+.play concurrency/exercise-equivalent-binary-trees.go
+
+* Exercício: Web Crawler
+
+Neste exercício, você vai usar os recursos da concorrência de Go para paralelizar um web crawler.
+
+Modifique a função `Crawl` para buscar URLs em paralelo, sem buscar a mesma URL duas vezes.
+
+.play concurrency/exercise-web-crawler.go
+
+* Para onde ir a partir daqui...
+
+#appengine: Você pode começar por
+#appengine: [[http://www.golangbr.org/doc/instalacao][instalando Go]] ou baixar o
+#appengine: [[http://code.google.com/appengine/downloads.html#Google_App_Engine_SDK_for_Go][Go App Engine SDK]].
+
+#appengine: Uma vez que você tenha Go em sua máquina, a [[http://golangbr.org/doc/][Documentação Go]] é um ótimo lugar para
+#appengine: continuar.
+começar.
+Ela contém referências, tutoriais, vídeos, e muito mais.
+
+Para aprender como organizar e trabalhar com código Go, veja [[http://www.youtube.com/watch?v=XCsL89YtqCs][este screencast]] ou leia  [[http://golangbr.org/doc/codigo][Como escrever código Go]].
+
+Se precisar de ajuda com a biblioteca padrão, consulte a [[http://golangbr.org/pkg/][referência de pacotes]]. Para obter ajuda com a linguagem em si, você pode ser surpreendido ao encontrar a [[http://golangbr.org/ref/spec][Especificação da Linguagem]], é bastante compreensivel.
+
+Para explorar ainda mais a concorrência no modelo de Go, consulte a [[http://golang.org/doc/codewalk/sharemem/][Share Memory by Communicating]] codewalk.
+
+O [[http://golang.org/doc/codewalk/functions/][First Class Functions in Go]] codewalk dá uma perspectiva interessante sobre tipos de funções em Go.
+
+O [[http://blog.golang.org/][Go Blog]] tem um grande arquivo de artigos informativos de Go. Além do [[http://blog.golangbr.org/][Blog Golang Brasil]] da comunidade brasileira.
+
+Participe da lista de discussão brasileira [[http://groups.google.com/group/golang-brasil][Golang Brasil]].
+
+Visite [[http://golangbr.org][golangbr.org]] para mais.

@@ -11,29 +11,40 @@ import (
 	"bytes"
 	"io"
 	"net/http"
+	"strings"
 
 	"appengine"
 
-	_ "code.google.com/p/go.tools/playground"
+	_ "golang.org/x/tools/playground"
 )
 
 const runUrl = "http://golang.org/compile"
 
 func init() {
+	http.HandleFunc("/lesson/", lessonHandler)
 	http.HandleFunc("/", rootHandler)
-	err := serveScripts("js", "HTTPTransport")
-	if err != nil {
-		panic(err)
-	}
-	if err := initTour("."); err != nil {
+
+	if err := initTour(".", "HTTPTransport"); err != nil {
 		panic(err)
 	}
 }
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
 	c := appengine.NewContext(r)
-	if err := renderTour(w); err != nil {
-		c.Criticalf("template render: %v", err)
+	if err := renderUI(w); err != nil {
+		c.Criticalf("UI render: %v", err)
+	}
+}
+
+func lessonHandler(w http.ResponseWriter, r *http.Request) {
+	c := appengine.NewContext(r)
+	lesson := strings.TrimPrefix(r.URL.Path, "/lesson/")
+	if err := writeLesson(lesson, w); err != nil {
+		if err == lessonNotFound {
+			http.NotFound(w, r)
+		} else {
+			c.Criticalf("tour render: %v", err)
+		}
 	}
 }
 

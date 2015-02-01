@@ -1,0 +1,258 @@
+Mais tipos: structs, slices, e maps
+Aprenda como definir tipos baseado nos existentes: esta lição cobre estruturas, matrizes, slices e maps.
+
+Os Autores de Go
+http://golang.org
+
+* Ponteiros
+
+Go tem ponteiros.
+Um ponteiro guarda na memória o endereço de uma variável.
+
+O tipo `*T` é um ponteiro para um valor `T`. Seu valor zero é `nil`.
+
+	var p *int
+
+O operador `&` gera um ponteiro para seu operando.
+
+	i := 42
+	p = &i
+
+O operador `*` indica valor subjacente do ponteiro.
+
+	fmt.Println(*p) // lê i através do ponteiro p
+	*p = 21         // defina i através do ponteiro p
+
+Isto é conhecido como "desreferenciamento" ou "indirecionamento".
+
+Diferente de C, Go não faz aritimética de ponteiros.
+
+.play moretypes/pointers.go
+
+* Structs
+
+A `struct` é uma coleção de campos.
+
+(E uma declaração `type` faz o que você espera.)
+
+.play moretypes/structs.go
+
+* Campos Struct
+
+Campos Struct são acessados ​​através de um ponto.
+
+.play moretypes/struct-fields.go
+
+* Ponteiros para structs
+
+Campos de estruturas podem ser acessados através de um ponteiro de estrutura.
+
+A indireção através do ponteiro é transparente.
+
+.play moretypes/struct-pointers.go
+
+* Struct literais
+
+A struct literal denota um valor struct recém-alocado, ao enumerar os valores de seus campos.
+
+Você pode listar apenas um subconjunto de campos usando o `Name:` sintaxe. (E a ordem dos campos nomeados é irrelevante.)
+
+O prefixo especial `&` constrói um ponteiro para uma struct literal.
+
+.play moretypes/struct-literals.go
+
+* Matrizes
+
+O tipo `[n]T` é uma matriz de `n` valor do tipo `T`.
+
+A expressão
+
+	var a [10]int
+
+declara a variável `a` com uma matriz de dez inteiros.
+
+O tamanho da matriz é parte de seu tipo, logo, matrizes não podem ser redimencionadas.
+Isso parece uma limitação, mas não se preocupe;
+Go dispões de uma maneira conveniente para trabalhar com matrizes.
+
+.play moretypes/array.go
+
+* Slices
+
+Um slice aponta para uma matriz de valorqes que também inclui o tamanho.
+
+`[]T` é um slice com elementos do tipo `T`.
+
+.play moretypes/slices.go
+
+* Fatiando slices
+
+Slices podem ser re-fatiados, criando um valor de uma nova slice que aponta para a mesma matriz.
+
+A expressão
+
+	s[lo:hi]
+
+avalia para uma slice de elementos de `lo` através de `hi-1`, inclusive. Assim
+
+	s[lo:lo]
+
+é vazia e
+
+	s[lo:lo+1]
+
+tem um elemento.
+
+.play moretypes/slicing-slices.go
+
+* Fazendo slices
+
+Slices são criados com a função `make`. Ele funciona através da atribuição de uma matriz zerada e retornando uma slice que se refere a essa matriz:
+
+	a := make([]int, 5)  // len(a)=5
+
+Para especificar uma capacidade, passe um terceiro argumento para `make`:
+
+	b := make([]int, 0, 5) // len(b)=0, cap(b)=5
+
+	b = b[:cap(b)] // len(b)=5, cap(b)=5
+	b = b[1:]      // len(b)=4, cap(b)=4
+
+.play moretypes/making-slices.go
+
+* Slices vazios
+
+O valor zero de uma slice é `nil`.
+
+Uma slice nil tem um comprimento e capacidade de 0.
+
+(Para saber mais sobre as slices, leia o artigo [[http://golang.org/doc/articles/slices_usage_and_internals.html][Slices: usage and internals]] .)
+
+.play moretypes/nil-slices.go
+
+* Adicionando elementos em um slice
+
+É commum acrescentar novos elementos em um slice, então Go dispões de uma função
+built-in `append` para isso. A [[http://golang.org/pkg/builtin/#append][documentação]]
+do pacote built-in descreve melhor o `append`.
+
+	func append(s []T, vs ...T) []T
+
+O primeiro parâmetro `s` do `append` é um slice do tipo `T`, e o resto são valores de `T`
+para acrescentar no slice.
+
+O valor resultante do `append` é um slice contendo todos os elementos do slice
+original mais os valores providos.
+
+Se a matriz anterior de `s` fpr muito pequena para caber todos os valores uma matriz
+gigante será alocada. O slice retornado apontara para a nova matriz alocada.
+
+(Para aprendar mais sobre slices, leia o artigo [[http://golang.org/doc/articles/slices_usage_and_internals.html][Slices: usage and internals]].)
+
+.play moretypes/append.go
+
+* Range
+
+O `range` do laço `for` itera sobre uma slice ou map.
+
+.play moretypes/range.go
+
+* Range continuação
+
+Você pode ignorar o índice ou valor, atribuindo o `_`.
+
+Se você só quiser o índice, deixe inteiramente sem o  ", value".
+
+.play moretypes/range-continued.go
+
+* Exercício: Slices
+
+Implemente `Pic`. Ela deve retornar uma slice de comprimento `dy`, cada elemento do qual é uma slice de `dx` 8-bit inteiros sem sinal. Quando você executa o programa, ele irá exibir a sua imagem, interpretando os números inteiros como escala dos valores de cinza (bem, bluescale).
+
+A escolha da imagem é com você. Funções interessantes incluem `x^y`, `(x+y)/2`, e `x*y`.
+
+(Você precisa usar um loop para alocar cada `[]uint8` dentro do `[][]uint8`.)
+
+(Utilize `uint8(intValue)` para converter entre os tipos.)
+
+.play moretypes/exercise-slices.go
+
+* Maps
+
+Um map mapeia chaves para valores.
+
+Maps devem ser criados com `make` (não com `new`) antes do uso, o map `nil` está vazio e não pode ser atribuído.
+
+.play moretypes/maps.go
+
+* Maps literais
+
+Maps literais são como structs literais, mas as chaves são obrigatórias.
+
+.play moretypes/map-literals.go
+
+* Maps literais continuação
+
+Se o tipo de nível superior é apenas um nome do tipo, você pode omiti-lo a partir dos elementos do literal.
+
+.play moretypes/map-literals-continued.go
+
+* Mutação de Maps
+
+Inserir ou atualizar um elemento no map `m`:
+
+	m[key] = elem
+
+Recuperar um elemento:
+
+	elem = m[key]
+
+Excluir um elemento:
+
+	delete(m, key)
+
+Teste que uma chave está presente com dois valores:
+
+	elem, ok = m[key]
+
+Se `key` está em `m`, `ok` é `true`. Se não, `ok` é `false` e `elem` tem valor zero pro elemento tipo do map.
+
+Da mesma forma, durante a leitura de um mapa se a chave não estiver presente, o resultado é o valor zero para o tipo de mapa do elemento.
+
+.play moretypes/mutating-maps.go
+
+* Exercício: Maps
+
+Implementar `WordCount`. Ele deve retornar um map das contagens de cada &ldquo;word&rdquo; na string `s`. A função `wc.Test` executa um conjunto de testes contra a função fornecida e imprime o sucesso ou falha.
+
+Você pode achar [[http://golang.org/pkg/strings/#Fields][strings.Fields]] útil.
+
+.play moretypes/exercise-maps.go
+
+* Funções valores
+
+Funções são valores também.
+
+.play moretypes/function-values.go
+
+* Funções closures
+
+E as funções são closures completos.
+
+A função `adder` retorna um closure. Cada closure abriga sua própria variável `sum`.
+
+.play moretypes/function-closures.go
+
+* Exercício: Fibonacci closure
+
+Vamos nos divertir um pouco com as funções.
+
+Implemente uma função `fibonacci` que retorna uma função (um closure) que retorna números sucessivos de Fibonacci.
+
+.play moretypes/exercise-fibonacci-closure.go
+
+* Parabéns!
+
+Você terminou esta lição!
+
+Você pode voltar para lista de [[/list][módulos]] para achar o que aprender em seguida, ou continuar com a [[javascript:click('.next-page')][próxima lição]].

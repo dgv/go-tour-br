@@ -1,0 +1,87 @@
+Bem-vindo!
+Aprenda como fazer este passeio: incluindo como navegar por lições diferentes e como rodar o código.
+
+Os Autores de Go
+http://golang.org
+
+* Olá, 世界
+
+Bem-vindo ao passeio pela [[http://golang.org/][Linguagem de Programação Go]].
+
+O passeio está dividito em uma lista que você pode
+acessar clicando no
+[[javascript:highlight(".logo")][Um passeio por Go]] no canto superior esquerdo da página.
+
+Você pode também ver a tabela de conteúdo a qualquer momento clicando no [[javascript:highlightAndClick(".nav")][menu]] no canto superior direito da página.
+
+Ao longo do passeio você vai encontrar uma série de slides e exercícios para você completar.
+
+Você pode navegar por ele usando
+
+- [[javascript:highlight(".prev-page")]["anterior"]] ou `PageUp` para ir a página anterior,
+
+- [[javascript:highlight(".next-page")]["próximo"]] ou `PageDown` para ir a próxima página.
+
+O passeio é interativo. Clique no botão
+[[javascript:highlightAndClick("#run")][Executar]] agora
+(ou tecle `shift-enter`) para compilar e executar o programa no
+#appengine: servidor remoto.
+seu computador.
+O resultado é mostrado abaixo do código.
+
+Estes examplos de programas demonstram a diferentes aspectos de Go. Os programas no passeio são destinadas a serem pontos de partida para a sua própria experimentação.
+
+Edite o programa e execute novamente.
+
+Observe que quando você clica em [[javascript:highlightAndClick("#format")][Formatar]] ou `ctrl-enter`
+o texto no editor é formatado pela ferramenta [[http://golang.org/cmd/gofmt/][gofmt]]. Você pode ligar ou desligar o destaque de sintaxe
+clicando no botão [[javascript:highlightAndClick(".syntax-checkbox")][sintaxe]].
+
+
+Quando você estiver pronto para seguir em frente, clique no [[javascript:highlightAndClick(".next-page")][seta para direita]] abaixo ou aperte a tecla `PageDown`.
+
+.play welcome/hello.go
+
+* Go local
+
+O passeio também está disponível em outras línguas:
+
+- [[http://go-tour-ca.appspot.com/][Catalão — Català]]
+- [[http://go-tour-zh.appspot.com/][Chinês Simplificado — 中文（简体）]]
+- [[http://go-tour-zh-tw.appspot.com/][Chinês Tradicional — 中文（繁體）]]
+- [[http://go-tour-es.appspot.com/][Espanhol — Español]]
+- [[http://go-tour-fr.appspot.com/][Francês - Français]]
+- [[http://go-tour-he.appspot.com/][Hebraico — עִבְרִית]]
+- [[http://tour.golang.org/][Inglês — English]]
+- [[http://go-tour-jp.appspot.com/][Japonês — 日本語]]
+- [[http://go-tour-kr.appspot.com/][Koreano — 한국어]]
+- [[http://go-tour-ro.appspot.com/][Romeno - Română]]
+- [[http://tur.golang.org.tr/][Turco - Türkçe]]
+
+
+Clique no [[javascript:highlightAndClick(".next-page")]["próximo"]] botão ou aperte a tecla `PageDown` para continuar.
+
+* O Playground Go
+
+Este passeio foi construído sobre o [[http://play.golang.org/][Go Playground]], um
+serviço web executado sobre servidores de [[http://golang.org/][golang.org]].
+
+O serviço recebe um programa Go, compila, linka, e executa o programa dentro
+de uma "sandbox", em seguida, devolve o resultado.
+
+Existem limitações para os programas que podem ser executados no playground:
+
+- No playground, o horário começa em 2009-11-10 23:00:00 UTC (o significado da determinação desta data é um exercício para o leitor). Isto torna mais fácil aos programas de cache, dando-lhes uma saída determinista.
+
+- Há também limites para o tempo de execução, de CPU e uso de memória, e o programa é restrito a execução em um único segmento (mas pode usar muitas goroutines).
+
+Leia "[[http://blog.golang.org/playground][Inside the Go Playground]]" para saber mais.
+
+.play welcome/sandbox.go
+
+* Parabéns
+
+Você terminou o primeiro módulo do passeio!
+
+Agora clique em [[javascript:highlightAndClick(".logo")][Um passeio por Go]] para descobrir o que mais
+você pode aprender sobre Go, ou ir diretamente para a [[javascript:click('.next-page')][próxima lição]].

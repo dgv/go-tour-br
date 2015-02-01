@@ -1,0 +1,135 @@
+Estruturas de controle de fluxo: for, if, else e switch
+Aprenda como controlar o fluxo do seu código com condicionais, loops, e switches.
+
+Os autores de Go
+http://golang.org
+
+* For
+
+Go tem apenas uma estrutura de laço, o `for`.
+
+O `for` básico parece com o que o de C ou Java fazem, exceto que as `(`)` se foram (não são nem mesmo opcionais) e os `{`}` são obrigatórios.
+
+.play flowcontrol/for.go
+
+* For (continuação)
+
+Como em C ou Java, você pode deixar as declarações do começo e do final vazias.
+
+.play flowcontrol/for-continued.go
+
+* For é o "while" de Go
+
+Nesse ponto, você pode tirar as vírgulas: o `while` do C é escrito com `for` em Go.
+
+.play flowcontrol/for-is-gos-while.go
+
+* Para sempre (Forever)
+
+Se você omitir a condição do laço, ele executará para sempre, e assim um loop infinito é compactadamente expresso.
+
+.play flowcontrol/forever.go
+
+* If
+
+A declaração `if` parece com o que o de C ou Java fazem, exceto que as `(`)` se foram (não são nem mesmo opcionais) e os `{`}` são obrigatórios.
+
+(Parece familiar?)
+
+.play flowcontrol/if.go
+
+* If com uma curta declaração
+
+Como o `for`, a instrução `if` pode começar com uma breve declaração antes de executar a condição.
+
+Variáveis ​​declaradas pela instrução são válidas somente no escopo até o final do `if`.
+
+(Tente usar `v` na última instrução `return`.)
+
+.play flowcontrol/if-with-a-short-statement.go
+
+* If e else
+
+Variáveis ​​declaradas dentro de uma instrução `if` curta também estão disponíveis dentro dos blocos `else`.
+
+.play flowcontrol/if-and-else.go
+
+* Exercício: Laços e Funções
+
+Como uma forma simples de brincar com as funções e laços, implemente a função de raiz quadrada usando o método de Newton.
+
+Neste caso, o método de Newton é aproximar `Sqrt(x)`, escolhendo um ponto de partida _z_ e depois repetindo:
+
+.image /content/img/newton.png
+
+Para começar, basta repetir esse cálculo 10 vezes e ver o quão perto você chega à resposta para vários valores (1, 2, 3, ...).
+
+Em seguida, altere a condição do laço para parar uma vez que o valor deixou de mudar (ou apenas mudanças por um delta muito pequeno). Veja se isso são muitas ou poucas iterações. Como ainda falta para o [[http://golang.org/pkg/math/#Sqrt][math.Sqrt]]?
+
+Dica: para declarar e inicializar um valor de ponto flutuante, dê-lhe a sintaxe de ponto flutuante ou use uma conversão:
+
+	z := float64(1)
+	z := 1.0
+
+.play flowcontrol/exercise-loops-and-functions.go
+
+* Switch
+
+Você provavelmente sabia que o `switch` estava chegando.
+
+O bloco case falhará automaticamente, a menos que termine com uma declaração `default`.
+
+.play flowcontrol/switch.go
+
+* Switch com ordem de avaliação
+
+Switch cases avaliam casos de cima para baixo, parando quando um caso for bem-sucedido.
+
+(Por exemplo,
+
+	switch i {
+	case 0:
+	case f():
+	}
+
+não chamar `f` se `i==0`.)
+
+#appengine: *Nota:* Tempo no playground Go sempre aparece para começar às
+#appengine: 2009-11-10 23:00:00 UTC, um valor cujo significado é deixado como um
+#appengine: exercício para o leitor.
+
+.play flowcontrol/switch-evaluation-order.go
+
+* Switch sem condição
+
+Switch sem uma condição é o mesmo que `switch`true`.
+
+Essa estrutura pode ser uma maneira limpa para escrever longas cadeias if-then-else.
+
+.play flowcontrol/switch-with-no-condition.go
+
+* Defer
+
+A declaração defer adia a execução de uma função até o final do retorno da função.
+
+Os argumentos das chamadas adiadas são avaliados imediatamente, mas a função chamada
+não é executada até o retorno da função.
+
+.play flowcontrol/defer.go
+
+* Empilhando defers
+
+Chamadas de funções adiadas são empurradas por uma pilha. Quando a função retorna,
+as chamadas de adiamento são executadas na ordem em que a última a entrar é a primeira
+a sair.
+
+Para aprender mais sobre a declaração defer leia isso
+[[http://blog.golang.org/defer-panic-and-recover][blog post]].
+
+.play flowcontrol/defer-multi.go
+
+* Parabéns!
+
+Você terminou esta lição!
+
+Você pode voltar para lista de [[/list][módulos]] para achar o que aprender em seguida, ou continuar com a [[javascript:click('.next-page')][próxima lição]].

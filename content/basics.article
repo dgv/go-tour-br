@@ -1,0 +1,221 @@
+Pacotes, variáveis e funções.
+Aprenda os componentes básicos de qualquer programa Go.
+
+Os Autores de Go
+http://golang.org
+
+* Pacotes
+
+Cada programa Go é composto de pacotes.
+
+Programas começam rodando pelo pacote `main`.
+
+Este programa está usando os pacotes com caminhos de importação `"fmt"` e `"math"`.
+
+Por convenção, o nome do pacote é o mesmo que o último elemento do caminho de importação.
+
+#appengine: *Nota*: o ambiente em que esses programas são executados é
+#appengine: determinístico, então rand.Intn sempre retornará o mesmo número.
+#appengine:
+#appengine: (Para ver um número diferente, a semente do gerador de números; veja [[http://golang.org/pkg/math/rand/#Seed][`rand.Seed`]].)
+
+.play basics/packages.go
+
+* Importações
+
+Este grupo de códigos em parênteses da importação, é a declaração de importação "consignada". Você também pode escrever várias declarações de importação assim:
+
+	import "fmt"
+	import "math"
+
+Mas é um bom estilo usar a declaração de importação consignada.
+
+.play basics/imports.go
+
+* Nomes exportados
+
+Depois de importar um pacote, você pode consultar os nomes que exporta.
+
+Em Go, um nome é exportado se começa com uma letra maiúscula.
+
+`Foo`  é um nome exportado, assim como `FOO`.
+O nome `foo` não é exportado.
+
+Execute o código. Em seguida, renomeie `math.pi` para `math.Pi` e tente novamente.
+
+.play basics/exported-names.go
+
+* Funções
+
+A função pode ter zero ou mais argumentos.
+
+Neste exemplo, adicione (`add`) dois parâmetros do tipo `int`.
+
+Observe que o tipo vem _após_ o nome da variável.
+
+(Para saber mais sobre o porquê dos tipos serem assim, consulte o [[http://golang.org/doc/articles/gos_declaration_syntax.html][artigo sobre a sintaxe de declaração de Go]].)
+
+.play basics/functions.go
+
+* Funções continuação
+
+Quando dois ou mais consecutivos parâmetros da função nomeados compartilhar um tipo, você pode omitir o tipo de todos, menos o último.
+
+Neste exemplo, vamos encurtar
+
+	x int, y int
+
+para
+
+	x, y int
+
+.play basics/functions-continued.go
+
+* Resultados Múltiplos
+
+Uma função pode retornar qualquer número de resultados.
+
+Esta função retorna duas strings.
+
+.play basics/multiple-results.go
+
+* Valores nomeados de retorno
+
+Valores de retorno de Go podem ser nomeados e agirem apenas como variáveis.
+
+Esses nomes devem ser usados para documentar o significado dos valores de retorno.
+
+A declaração `return` sem argumentos retorna os valores atuais dos resultados. Isto é conhecido como um retorno "limpo".
+
+Instruções de retorno limpas devem ser usadas apenas em funções curtas, como no exemplo mostrado aqui. Elas podem prejudicar a legibilidade em funções mais longas.
+
+.play basics/named-results.go
+
+* Variáveis
+
+A instrução `var` declara uma lista de variáveis, como em listas de argumentos de função, o tipo é o último passado.
+
+A declaração `var` pode estar num pacote ou a nível de função. Nós vemos ambos neste exemplo.
+
+.play basics/variables.go
+
+* Variáveis com inicializadores
+
+A declaração var pode incluir inicializadores, uma por variável.
+
+Se um inicializador está presente, o tipo pode ser omitido; a variável terá o tipo do inicializador.
+
+.play basics/variables-with-initializers.go
+
+* Declarações curtas de variáveis
+
+Dentro de uma função a instrução de atribuição curta `:=` pode ser utilizada em lugar de uma declaração `var` com o tipo implícito.
+
+Fora de uma função cada estrutura começa com uma palavra-chave (`var`, `func`, e assim por diante) e não é possível usar o `:=`.
+
+.play basics/short-variable-declarations.go
+
+* Tipos básicos
+
+Os tipos básicos de Go são
+
+	bool
+
+	string
+
+	int  int8  int16  int32  int64
+	uint uint8 uint16 uint32 uint64 uintptr
+
+	byte // pseudônimo para uint8
+
+	rune // pseudônimo para int32
+	     // representa um ponto de código Unicode
+
+	float32 float64
+
+	complex64 complex128
+
+O exemplo mostra vários tipos de variáveis
+e também que as declarações de variáveis podem ser "construidas" em blocos,
+como com as declarações de importação.
+
+.play basics/basic-types.go
+
+* Valores zero
+
+Variáveis declaradas sem um valor inicial explicitado darão seu _valor_zero_.
+
+O valor zero é:
+
+- `0` para tipos numéricos,
+- `false` para tipos boleanos, e
+- `""` (string vazia) para strings.
+
+.play basics/zero.go
+
+* Conversões de tipo
+
+A expressão `T(v)` converte o valor `v` para o tipo `T`.
+
+Algumas conversões numéricas:
+
+	var i int = 42
+	var f float64 = float64(i)
+	var u uint = uint(f)
+
+Ou, de uma forma mais simples:
+
+	i := 42
+	f := float64(i)
+	u := uint(f)
+
+Diferente de C, em Go atribuição entre os itens de tipo diferente requer uma
+conversão explícita.
+Tente remover as conversões `float64` ou `int` no exemplo e veja o que acontece.
+
+.play basics/type-conversions.go
+
+* Inferência de tipo
+
+Ao declarar uma variável, sem especificar o seu tipo (usando `var` sem um tipo ou na sitaxe `:=`), o tipo da variável é _inferida_ a partir do valor do lado direito.
+
+Quando o lado direito da declaração é digitado, a nova variável é do mesmo tipo:
+
+	var i int
+	j := i // j é um int
+
+Mas, quando o lado direito contém uma constante numérica não tipificada, a nova variável pode ser um `int`, `float64`, ou `complex128` dependendo da precisão da constante:
+
+	i := 42           // int
+	f := 3.142        // float64
+	g := 0.867 + 0.5i // complex128
+
+Tente alterar o valor inicial de `V` no código de exemplo e observar como seu tipo é afetado.
+
+.play basics/type-inference.go
+
+* Constantes
+
+Constantes são declaradas como variáveis, mas com a palavra-chave `const`.
+
+Constantes podem ser seqüências de caracteres, booleanos, ou valores numéricos.
+
+Constantes não podem ser declaradas usando a sintaxe `:=`.
+
+.play basics/constants.go
+
+* Constantes Numéricas
+
+Constantes numéricas também são _valores_ de alta-precisão.
+
+Uma constante sem tipo pega o tipo necessário pelo seu contexto.
+
+Tente mostrar `needInt(Big)` também.
+
+.play basics/numeric-constants.go
+
+* Parabéns!
+
+Você terminou esta lição!
+
+Você pode voltar para lista de [[/list][módulos]] para achar o que aprender em seguida, ou continuar com a [[javascript:click('.next-page')][próxima lição]].
