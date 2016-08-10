@@ -8,7 +8,7 @@ http://golang.org
 
 Bem-vindo ao passeio pela [[http://golang.org/][Linguagem de Programação Go]].
 
-O passeio está dividito em uma lista que você pode
+O passeio está dividido em uma lista que você pode
 acessar clicando no
 [[javascript:highlight(".logo")][Um passeio por Go]] no canto superior esquerdo da página.
 
@@ -29,7 +29,7 @@ O passeio é interativo. Clique no botão
 seu computador.
 O resultado é mostrado abaixo do código.
 
-Estes examplos de programas demonstram a diferentes aspectos de Go. Os programas no passeio são destinadas a serem pontos de partida para a sua própria experimentação.
+Estes examplos de programas demonstram os diferentes aspectos de Go. Os programas no passeio são destinadas a serem pontos de partida para a sua própria experimentação.
 
 Edite o programa e execute novamente.
 
