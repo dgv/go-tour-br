@@ -1,8 +1,8 @@
-// +build OMIT
+// +build no-build OMIT
 
 package main
 
-import "code.google.com/p/go-tour/pic"
+import "golang.org/x/tour/pic"
 
 func Pic(dx, dy int) [][]uint8 {
 }

@@ -79,39 +79,108 @@ Go dispões de uma maneira conveniente para trabalhar com matrizes.
 
 * Slices
 
-Um slice aponta para uma matriz de valores que também inclui o tamanho.
+Uma matriz tem um tamanho fixo.
+Uma slice, por outro lado, é dinâmicamente redimencionada,
+uma visão flexível dos elementos de uma matriz.
+Na prática, as slices são muito mais comuns do que as matrizes.
 
-`[]T` é um slice com elementos do tipo `T`.
+O tipo `[]T` é uma slice com elementos do tipo `T`.
+
+Essa expressão cria uma slice dos primeiros cinco elementos do array  `a`:
+
+	a[0:5]
+
 
 .play moretypes/slices.go
 
-* Fatiando slices
 
-Slices podem ser re-fatiados, criando um valor de uma nova slice que aponta para a mesma matriz.
+* Slices são como referências para matrizes
 
-A expressão
+Uma slice não armazena todos os dados,
+apenas descreve uma seção de uma matriz subjacente.
 
-	s[lo:hi]
+Alterando os elementos de uma slice modifica os
+elementos correspondentes da sua matriz subjacente.
 
-avalia para uma slice de elementos de `lo` através de `hi-1`, inclusive. Assim
+Outras slices que partilham a mesma matriz subjacente vão ver essas mudanças.
 
-	s[lo:lo]
+.play moretypes/slices-pointers.go
 
-é vazia e
 
-	s[lo:lo+1]
+* Slices literais
 
-tem um elemento.
+Uma slice literal é como um array literal, sem o comprimento.
 
-.play moretypes/slicing-slices.go
+Esta é uma matriz literal:
 
-* Fazendo slices
+	[3]bool{true, true, false}
 
-Slices são criados com a função `make`. Ele funciona através da atribuição de uma matriz zerada e retornando uma slice que se refere a essa matriz:
+E isso cria a mesma matriz como acima,
+em seguida, constrói uma slice que faz referência a ela:
+
+	[]bool{true, true, false}
+
+.play moretypes/slice-literals.go
+
+
+* Padrões de uma Slice
+
+Ao "fatiar", você pode omitir as posições de limite altas ou baixas para usar seus padrões em seu lugar.
+
+O padrão é igual a zero para o limite baixo e o comprimento da slice para o limite alto.
+
+Para a matriz
+
+	var a [10]int
+
+essas expressões das slices são equivalentes:
+
+	a[0:10]
+	a[:10]
+	a[0:]
+	a[:]
+
+.play moretypes/slice-bounds.go
+
+
+*  Tamanho e capacidade de uma Slice
+
+Uma slice tem tanto um _tamanho_ quanto uma _capacidade_.
+
+O comprimento de uma slice é o número de elementos que ela contém.
+
+A capacidade de uma slice é o número de elementos na matriz subjacente,
+contando a partir do primeiro elemento na slice.
+
+O comprimento e a capacidade de uma slice `S` podem ser obtidos utilizando as expressões
+`len(s)` e `cap(s)`.
+
+Você pode estender o comprimento de uma slice "refatiando-a",
+desde que tenha capacidade suficiente.
+Tente alterar uma das operações da slice no programa de exemplo para estendê-la
+além de sua capacidade e veja o que acontece.
+
+.play moretypes/slice-len-cap.go
+
+* Slices nulas
+
+O valor zero de uma slice é `nil`.
+
+Uma slice nula tem o comprimento e a capacidade igual 0.
+
+.play moretypes/nil-slices.go
+
+* Criando uma slice com make
+
+As slices podem ser criadas com a função `make` padrão;
+isto é como você criar matrizes dinamicamente.
+
+O função `make` aloca uma matriz zerada
+e retorna uma slice que se refere a essa matriz:
 
 	a := make([]int, 5)  // len(a)=5
 
-Para especificar uma capacidade, passe um terceiro argumento para `make`:
+Para especificar a capacidade, passe o terceiro argumento no `make`:
 
 	b := make([]int, 0, 5) // len(b)=0, cap(b)=5
 
@@ -120,32 +189,29 @@ Para especificar uma capacidade, passe um terceiro argumento para `make`:
 
 .play moretypes/making-slices.go
 
-* Slices vazios
 
-O valor zero de uma slice é `nil`.
+* Slices de slices
 
-Uma slice nil tem um comprimento e capacidade de 0.
+As slices podem conter qualquer tipo, incluindo outras slices.
 
-(Para saber mais sobre as slices, leia o artigo [[http://golang.org/doc/articles/slices_usage_and_internals.html][Slices: usage and internals]] .)
+.play moretypes/slices-of-slice.go
 
-.play moretypes/nil-slices.go
+* Adicionando elementos em uma slice
 
-* Adicionando elementos em um slice
-
-É comum acrescentar novos elementos em um slice, então Go dispões de uma função
-built-in `append` para isso. A [[http://golang.org/pkg/builtin/#append][documentação]]
-do pacote built-in descreve melhor o `append`.
+É comum acrescentar novos elementos em uma slice, então Go dispões de uma função
+padrão para isso o `append`. A [[http://golang.org/pkg/builtin/#append][documentação]]
+do pacote padrão descreve melhor o `append`.
 
 	func append(s []T, vs ...T) []T
 
-O primeiro parâmetro `s` do `append` é um slice do tipo `T`, e o resto são valores de `T`
-para acrescentar no slice.
+O primeiro parâmetro `s` do `append` é uma slice do tipo `T`, e o resto são valores de `T`
+para acrescentar na slice.
 
-O valor resultante do `append` é um slice contendo todos os elementos do slice
+O valor resultante do `append` é uma slice contendo todos os elementos da slice
 original mais os valores providos.
 
 Se a matriz anterior de `s` for muito pequena para caber todos os valores uma matriz
-gigante será alocada. O slice retornado apontara para a nova matriz alocada.
+gigante será alocada. A slice retornada apontará para a nova matriz alocada.
 
 (Para aprendar mais sobre slices, leia o artigo [[http://golang.org/doc/articles/slices_usage_and_internals.html][Slices: usage and internals]].)
 

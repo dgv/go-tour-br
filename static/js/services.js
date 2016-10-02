@@ -33,7 +33,7 @@ factory('i18n', ['translation',
 // Running code
 factory('run', ['$window', 'editor',
     function(win, editor) {
-        var writeInterceptor = function(writer) {
+        var writeInterceptor = function(writer, done) {
             return function(write) {
                 if (write.Kind == 'stderr') {
                     var lines = write.Body.split('\n');
@@ -45,14 +45,15 @@ factory('run', ['$window', 'editor',
                     }
                 }
                 writer(write);
+                if (write.Kind == 'end') done();
             };
         };
-        return function(code, output, options) {
+        return function(code, output, options, done) {
             // PlaygroundOutput is defined in playground.js which is prepended
             // to the generated script.js in gotour/tour.go.
             // The next line removes the jshint warning.
             // global PlaygroundOutput
-            win.transport.Run(code, writeInterceptor(PlaygroundOutput(output)), options);
+            return win.transport.Run(code, writeInterceptor(PlaygroundOutput(output), done), options);
         };
     }
 ]).
@@ -77,7 +78,9 @@ factory('fmt', ['$http',
 // Local storage, persistent to page refreshing.
 factory('storage', ['$window',
     function(win) {
-        if (win.localStorage) {
+        try {
+            // This will raise an exception if cookies are disabled.
+            win.localStorage = win.localStorage;
             return {
                 get: function(key) {
                     return win.localStorage.getItem(key);
@@ -86,13 +89,14 @@ factory('storage', ['$window',
                     win.localStorage.setItem(key, val);
                 }
             };
+        } catch (e) {
+            return {
+                get: function() {
+                    return null;
+                },
+                set: function() {}
+            };
         }
-        return {
-            get: function() {
-                return null;
-            },
-            set: function() {}
-        };
     }
 ]).
 
@@ -185,7 +189,7 @@ factory('toc', ['$http', '$q', '$log', 'tableOfContents', 'storage',
                             var page = lesson.Pages[p];
                             for (var f = 0; f < page.Files.length; f++) {
                                 page.Files[f].OrigContent = page.Files[f].Content;
-                                var val = storage.get(lessonName + '.' + p + '.' + f);
+                                var val = storage.get(page.Files[f].Hash);
                                 if (val !== null) {
                                     page.Files[f].Content = val;
                                 }

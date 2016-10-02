@@ -5,10 +5,8 @@ package main
 import "fmt"
 
 func main() {
-	p := []int{2, 3, 5, 7, 11, 13}
-	fmt.Println("p ==", p)
+	primes := [6]int{2, 3, 5, 7, 11, 13}
 
-	for i := 0; i < len(p); i++ {
-		fmt.Printf("p[%d] == %d\n", i, p[i])
-	}
+	var s []int = primes[1:4]
+	fmt.Println(s)
 }

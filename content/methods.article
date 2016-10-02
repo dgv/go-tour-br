@@ -6,33 +6,132 @@ http://golang.org
 
 * Métodos
 
-Go não tem classes. No entanto, você pode definir métodos em tipos struct.
+Go não tem classes. 
+No entanto, você pode definir métodos em tipos struct.
 
 O _método_receptor_ aparece em sua lista de argumentos entre a própria palavra-chave `func` e o nome do método.
 
+Neste exemplo, o método `Abs` tem um receptor do tipo `Vertex` chamado `V`.
+
 .play methods/methods.go
+
+* Métodos são funções
+
+Lembre-se: um método é apenas uma função com um argumento receptor.
+
+Aqui está `Abs` escrito como uma função regular, sem qualquer alteração na funcionalidade.
+
+.play methods/methods-funcs.go
 
 * Métodos continuação
 
-Na verdade, você pode definir um método em _qualquer_ tipo que você definir em seu package, e não apenas structs.
+Você pode declarar um método em tipos que não são struct também.
 
-Você não pode definir um método em um tipo de um outro pacote, ou em um tipo básico.
+Neste exemplo, vemos um tipo numérico `MyFloat` com um método `Abs`.
+
+Só pode declarar um método com um receptor cujo tipo é definido no mesmo 
+pacote como o método.
+Você não pode declarar um método com um receptor cujo tipo é definido em outro
+pacote (o qual inclui os tipos padrões tais como `int`).
 
 .play methods/methods-continued.go
 
-* Métodos com ponteiro receptor
+* Ponteiro receptor 
 
-Os métodos podem ser associados com um tipo nomeado ou um ponteiro para um tipo nomeado.
+Você pode declarar métodos com ponteiro receptor .
 
-Nós só vimos dois métodos `Abs`. Um no tipo ponteiro `*Vertex` e outro no valor do tipo `MyFloat`.
+Isso significa que o tipo de receptor tem a sintaxe literal `*t` por algum tipo `t`.
+(Além disso, `t` não pode ser ele próprio, um ponteiro como `*int`.)
 
-Há duas razões para usar um receptor de ponteiro. Primeiro, para evitar copiar o valor de cada chamada de método (mais eficiente se o tipo de valor é uma estrutura grande). Em segundo lugar, de modo que o método possa modificar o valor que o seu receptor aponta.
+Por exemplo, o método `Scale` aqui é definido no `*Vertex`.
 
-Tente mudar as declarações dos métodos `Abs` e `Scale` para usar `Vertex` como o receptor, ao invés de `*Vertex`.
+Métodos com ponteiro receptores pode modificar o valor ao qual o receptor
+Os pontos (como `Scale` faz aqui).
+Desde métodos muitas vezes precisam modificar seu receptor, receptores de ponteiro são mais comuns do que receptores de valor.
 
-O método `Scale` não tem efeito sobre `v` é um `Vertex`. `Scale` muda `v`. Quando `v` é um tipo valor (não-ponteiro), o método vê uma cópia do `Vertex` e não pode sofrer mutação do valor original.
+Tente remover o `*` a partir da declaração da função `Scale` na linha 16
+e observar como o comportamento do programa muda.
 
-`Abs` funciona de qualquer maneira. Ele apenas lê `v`. Não importa se ele está lendo o valor original (através de um ponteiro) ou uma cópia desse valor.
+Com um receptor de valor, o método `Scale` opera sobre uma cópia do original
+`Valor Vertex`.
+(Este é o mesmo comportamento para qualquer outro argumento da função.)
+O método `Scale` deve ter um receptor ponteiro para mudar o `valor Vertex`
+declarados na função `main`.
+
+.play methods/methods-pointers.go
+
+* Ponteiros e funções
+
+Aqui vemos os métodos da `Scale` e `Abs` reescritos como funções.
+
+Mais uma vez, tente remover o `*` a partir da linha 16.
+Você pode ver porque as mudanças de comportamento ocorrem?
+O que mais você precisa mudar para o exemplo compilar?
+
+(Se você não tiver certeza, continue para a próxima página.)
+
+.play methods/methods-pointers-explained.go
+
+* Métodos e indireção de ponteiros
+
+Comparando os dois programas anteriores, você pode notar que
+funções com um argumento de ponteiro deve ter um ponteiro:
+
+	var v Vertex
+	ScaleFunc(v)  // Erro de compilação!
+	ScaleFunc(&v) // OK
+
+enquanto que os métodos com receptores ponteiro assumem um valor ou um ponteiro como o receptor quando eles são chamados:
+
+	var v Vertex
+	v.Scale(5)  // OK
+	p := &v
+	p.Scale(10) // OK
+
+
+Para a instrução `v.Scale(5)` , embora `V` seja um valor e não um ponteiro,
+o método com o receptor ponteiro é chamado automaticamente.
+Ou seja, por conveniência, Go interpreta a declaração `v.Scale(5)` como `(&V).Scale(5)` uma vez que o método `Scale` tem um receptor de ponteiro.
+
+.play methods/indirection.go
+
+* Métodos e indireção de ponteiros (2)
+
+A coisa equivalente acontece no sentido inverso.
+
+Funções que recebem um argumento de valor devem ter um valor desse tipo específico:
+
+	var v Vertex
+	fmt.Println(AbsFunc(v))  // OK
+	fmt.Println(AbsFunc(&v)) // Erro de compilação!
+
+enquanto que os métodos com receptores de valor tomam um valor ou um ponteiro como o
+receptor quando eles são chamados:
+
+	var v Vertex
+	fmt.Println(v.Abs()) // OK
+	p := &v
+	fmt.Println(p.Abs()) // OK
+
+Neste caso, o método que chama `p.Abs()` é interpretado como `(*p).Abs()`.
+
+.play methods/indirection-values.go
+
+* Escolhendo um valor ou ponteiro receptor
+
+Há duas razões para usar um receptor de ponteiro.
+
+O primeiro é para que o método possa modificar o valor que os seus pontos de receptor.
+
+A segunda é para evitar copiar o valor de cada chamada de método.
+Isto pode ser mais eficaz se o receptor for uma estrutura grande, por exemplo.
+
+Neste exemplo, tanto `Scale` e `Abs` estão com tipo de receptor `*Vertex`,
+mesmo que o método `Abs` não precise modificar seu receptor.
+
+Em geral, todos os métodos em um determinado tipo devem ter o valor ou ponteiro
+receptores, mas não uma mistura de ambos.
+(Vamos ver porque nas próximas páginas).
 
 .play methods/methods-with-pointer-receivers.go
 
@@ -42,25 +141,124 @@ Um tipo de interface é definida por um conjunto de métodos.
 
 Um valor de tipo de interface pode conter qualquer valor que implementa esses métodos.
 
-*Observe:* Tem um erro no exemple na linha22.
+*Observe:* Tem um erro no exemple na linha 22.
 `Vertex` (do tipo valor) não satisfaz `Abser` porque
 o método `Abs` é definido apenas em `*Vertex` (do tipo ponteiro)
 
 .play methods/interfaces.go
 
-* Interfaces são satisfeitas implicitamente
+* Interfaces são implementadas implicitamente
 
 Um tipo implementa uma interface através da implementação dos métodos.
+Não há declaração explícita de intenções, não há palavra-chave "implements".
 
-_Não_há_declaração_explícita_de_intenções._
-
-As interfaces implícitas dissociam os pacotes de implementação que definem as interfaces: um não depende do outro.
-
-Além disso, incentiva a definição de interfaces precisas, porque você não tem que encontrar todas as implementações e marcá-las com o novo nome de interface.
-
-[[http://golang.org/pkg/io/][Pacote io]] define `Reader` e `Writer`; você não precisa implementar.
+Interfaces implícitas dissociam-se  da definição de uma interface de sua implementação,  que pode então aparecer em qualquer pacote sem pré-arranjamento.
 
 .play methods/interfaces-are-satisfied-implicitly.go
+
+* Valores de Interface
+
+Por dentro, os valores de interface podem ser pensados como uma tupla de um valor de um 
+tipo concreto:
+
+	(valor, tipo)
+
+Uma valor de uma interface contém um valor de um tipo concreto subjacente específico.
+
+Chamando um método em um valor de interface executa o método do mesmo nome no
+seu tipo subjacente.
+
+.play methods/interface-values.go
+
+* Valores de interface com valores subjacentes nulos
+
+Se o valor concreto no interior da própria interface é nulo,
+o método será chamado com um receptor nulo.
+
+Em algumas linguagens isso iria desencadear uma exceção de ponteiro nulo,
+mas em Go é comum para escrever métodos que normalmente lidam sendo chamado
+com um receptor nil (como acontece com o método `M` neste exemplo).
+
+Nota-se que um valor de interface que contém um valor nulo concreto é por si não-nulo.
+
+.play methods/interface-values-with-nil.go
+
+* Valores de interface nulos 
+
+Um valor de interface nil detém nem o valor nem tipo concreto.
+
+Chamar um método em uma interface nila resulta em um erro de tempo de execução porque não há
+um tipo dentro da tupla de interface para indicar qual o _método_concreto_ a chamar.
+
+.play methods/nil-interface-values.go
+
+* A interface vazia
+
+O tipo de interface que especifica zero métodos é conhecido como  _interface_vazia_:
+
+	interface{}
+
+Uma interface vazia pode conter valores de qualquer tipo.
+(Cada tipo implementa pelo menos de zero métodos.)
+
+Interfaces vazias são usadas pelo código que lida com valores de tipo desconhecido.
+Por exemplo, `fmt.Print` leva qualquer número de argumentos do tipo `interface{}`.
+
+.play methods/empty-interface.go
+
+* Type assertation
+
+A _type_assertation_ fornece acesso ao valor concreto subjacente de um valor de interface.
+
+	t := i.(T)
+
+Esta declaração afirma que o valor de interface `i` detém o tipo concreto `T`
+e atribui o valor de `T` subjacente à variável `t`.
+
+Se `i` não detém uma `T`, a declaração irá desencadear um erro pânico.
+
+Para _testar_ se um valor de interface possui um tipo específico,
+uma type assertation pode retornar  dois valores: o valor subjacente
+e um valor booleano que informa se a afirmação é correta.
+
+	t, ok: = i (T).
+
+Se `i` detém `T`, então `t` será o valor subjacente e `ok` será verdade.
+
+Se não, `ok` será falso e `t` será o valor zero do tipo `T`,
+e sem ocorrer erro pânico.
+
+Note a semelhança entre esta sintaxe e  da leitura de um map.
+
+.play methods/type-assertions.go
+
+* Type Switch
+
+Um _type_switch_ é uma construção que permite diversas type assertations em série.
+
+Um type switch é como uma instrução switch regular, mas os casos em um type switch especificam os tipos (e não valores), e esses valores são comparados com
+o tipo dos valores determinados da interface informada.
+
+	switch v := i.(type) {
+	case T:
+		// aqui v tem o tipo T
+	case S:
+		// aqui v tem o tipo S
+	default:
+		// sem correspondênte; aqui V tem o mesmo tipo I
+	}
+
+A declaração em um type switch tem a mesma sintaxe como uma afirmação de tipo de  `i.(T)`,
+mas o tipo específico `t` é substituído com a palavra-chave `type`.
+
+Nisso a instrução switch testa se o valor de interface `i`
+detém um valor de tipo `T` ou `S`.
+Em cada um dos casos `T` e `S`, a variável `v` será do tipo
+`T` ou `S` respectivamente e guarda o valor mantido por `i`.
+No caso padrão (onde não houver correspondência), a variável `v` é
+do mesmo tipo e valor da interface `i`.
+
+.play methods/type-switches.go
 
 * Stringers
 
@@ -86,7 +284,7 @@ Por exemplo, `IPAddr{1,`2,`3,`4}` deve ser mostrado como `"1.2.3.4"`.
 
 * Erros
 
-Programas Go expressam estados de erro com valores 'error`.
+Programas Go expressam estados de erro com valores `error`.
 
 O tipo `error` é uma interface built-in simliar a `fmt.Stringer`:
 
@@ -140,21 +338,12 @@ que representa o fim da leitura de um fluxo de dados.
 
 A biblioteca padrão contém [[http://golang.org/search?q=Read#Global][várias implementações]] destas interfaces, incluindo arquivos, conexões de rede, compressores, cifras e outros.
 
-
-The `io.Reader` interface has a `Read` method:
-
-	func (T) Read(b []byte) (n int, err error)
-
-`Read` populates the given byte slice with data and returns the number of bytes
-populated and an error value. It returns an `io.EOF` error when the stream
-ends.
-
 A interface `io.Reader` tem um método `Read`:
 
   func (T) Read(b []byte) (n int, err error)
 
 `Read` popula um slice de bytes passados com dados e retorna o número de bytes
-populados e um valor de erro. Este retorna um erro`io.EOF` quando o fluxo termina.
+populados e um valor de erro. Este retorna um erro `io.EOF` quando o fluxo termina.
 
 O exemplo de código cria um
 [[//golang.org/pkg/strings/#Reader][`strings.Reader`]].
@@ -175,52 +364,13 @@ Um padrão comum é um [[http://golang.org/pkg/io/#Reader][io.Reader]] que envol
 
 Por exemplo, a função [[http://golang.org/pkg/compress/gzip/#NewReader][gzip.NewReader]] recebe um `io.Reader` (um fluxo de dados compactado) e retorna um `*gzip.Reader` que também implementa `io.Reader` (um fluxo de dados descomprimidos).
 
-Implemente um `rot13Reader` que implementa um `io.Reader` que leia a partir de um `io.Reader`,modificando o fluxo através da aplicação da cifra [[http://en.wikipedia.org/wiki/ROT13][ROT13]] de substituição para todos os caracteres alfabéticos.
+Implemente um `rot13Reader` que implementa um `io.Reader` que leia a partir de um  `io.Reader` , modificando o fluxo através da aplicação da cifra [[http://en.wikipedia.org/wiki/ROT13][ROT13]] de substituição para todos os caracteres alfabéticos.
 
 O tipo `rot13Reader` é fornecido para você.
 
 Você deve torná-lo um `io.Reader` através da implementação de seu método `Read`.
 
 .play methods/exercise-rot-reader.go
-
-* Servidores Web
-
-O [[http://golang.org/pkg/net/http/][pacote http]] serve requisições HTTP usando qualquer valor que implementa `http.Handler`:
-
-	package http
-
-	type Handler interface {
-		ServeHTTP(w ResponseWriter, r *Request)
-	}
-
-Neste exemplo, o tipo `Hello` implementa `http.Handler`.
-
-Visite [[http://localhost:4000/][http://localhost:4000/]] para ver a saudação.
-
-#appengine: *Nota:* Este exemplo não será executado através da interface web-based
-#appengine: do passeio. Para tentar escrever servidores web que você possa querer
-#appengine: [[http://golang.org/doc/install/][Install Go]].
-
-.play methods/web-servers.go
-
-* Exercício: manipuladores HTTP
-
-Implementar os seguintes tipos e definir métodos ServeHTTP sobre eles. Registrá-los para lidar com caminhos específicos no seu servidor web.
-
-	type String string
-
-	type Struct struct {
-		Greeting string
-		Punct    string
-		Who      string
-	}
-
-Por exemplo, você deve ser capaz de registrar manipuladores usando:
-
-	http.Handle("/string", String("I'm a frayed knot."))
-	http.Handle("/struct", &Struct{"Hello", ":", "Gophers!"})
-
-.play methods/exercise-http-handlers.go
 
 * Imagens
 

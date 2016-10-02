@@ -1,11 +1,8 @@
-// +build OMIT
+// +build no-build OMIT
 
 package main
 
-import (
-	"code.google.com/p/go-tour/pic"
-	"image"
-)
+import "golang.org/x/tour/pic"
 
 type Image struct{}
 

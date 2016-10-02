@@ -127,6 +127,26 @@ Então leia e imprima 10 valores do canal. Deve ser os números 1, 2, 3, ..., 10
 
 .play concurrency/exercise-equivalent-binary-trees.go
 
+* sync.Mutex
+
+Temos visto como os canais são bons para a comunicação entre goroutines.
+
+Mas e se nós não precisássemos de comunicação? E se nós apenas quiséssemos ter certeza que uma única goroutine pode acessar uma variável de cada vez para evitar conflitos?
+
+Este conceito é chamado _exclusão_mútua_, e o nome convencional para a estrutura de dados que a fornece é _mutex_.
+
+A biblioteca padrão do Go que fornece exclusão mútua com
+[[https://golang.org/pkg/sync/#Mutex][`sync.Mutex`]] e seus dois métodos:
+
+- `Lock`
+- `Unlock`
+
+Podemos definir um bloco de código a ser executado em exclusão mútua pelo que o rodeia com uma chamada para `Lock` e `Unlock` como mostrado no método `Inc`.
+
+Nós também podemos usar `defer` para garantir que o mutex será desbloqueado como no método `Value`.
+
+.play concurrency/mutex-counter.go
+
 * Exercício: Web Crawler
 
 Neste exercício, você vai usar os recursos da concorrência de Go para paralelizar um web crawler.
@@ -148,7 +168,7 @@ Ela contém referências, tutoriais, vídeos, e muito mais.
 
 Para aprender como organizar e trabalhar com código Go, veja [[http://www.youtube.com/watch?v=XCsL89YtqCs][este screencast]] ou leia  [[http://golangbr.org/doc/codigo][Como escrever código Go]].
 
-Se precisar de ajuda com a biblioteca padrão, consulte a [[http://golangbr.org/pkg/][referência de pacotes]]. Para obter ajuda com a linguagem em si, você pode ser surpreendido ao encontrar a [[http://golangbr.org/ref/spec][Especificação da Linguagem]], é bastante compreensivel.
+Se precisar de ajuda com a biblioteca padrão, consulte a [[http://golangbr.org/pkg/][referência de pacotes]]. Para obter ajuda com a linguagem em si, você pode ser surpreendido ao encontrar a [[http://golang.org/ref/spec][Especificação da Linguagem]], é bastante compreensivel.
 
 Para explorar ainda mais a concorrência no modelo de Go, consulte a [[http://golang.org/doc/codewalk/sharemem/][Share Memory by Communicating]] codewalk.
 

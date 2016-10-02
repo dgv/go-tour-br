@@ -1,6 +1,8 @@
+// +build no-build OMIT
+
 package main
 
-import "code.google.com/p/go-tour/reader"
+import "golang.org/x/tour/reader"
 
 type MyReader struct{}
 
