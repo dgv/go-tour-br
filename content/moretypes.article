@@ -53,7 +53,7 @@ A indireção através do ponteiro é transparente.
 
 * Struct literais
 
-A struct literal denota um valor struct recém-alocado, ao enumerar os valores de seus campos.
+A struct literal indica um valor struct recém-alocado, ao enumerar os valores de seus campos.
 
 Você pode listar apenas um subconjunto de campos usando o `Name:` sintaxe. (E a ordem dos campos nomeados é irrelevante.)
 
@@ -79,7 +79,7 @@ Go dispões de uma maneira conveniente para trabalhar com matrizes.
 
 * Slices
 
-Um slice aponta para uma matriz de valorqes que também inclui o tamanho.
+Um slice aponta para uma matriz de valores que também inclui o tamanho.
 
 `[]T` é um slice com elementos do tipo `T`.
 
@@ -132,7 +132,7 @@ Uma slice nil tem um comprimento e capacidade de 0.
 
 * Adicionando elementos em um slice
 
-É commum acrescentar novos elementos em um slice, então Go dispões de uma função
+É comum acrescentar novos elementos em um slice, então Go dispões de uma função
 built-in `append` para isso. A [[http://golang.org/pkg/builtin/#append][documentação]]
 do pacote built-in descreve melhor o `append`.
 
@@ -144,7 +144,7 @@ para acrescentar no slice.
 O valor resultante do `append` é um slice contendo todos os elementos do slice
 original mais os valores providos.
 
-Se a matriz anterior de `s` fpr muito pequena para caber todos os valores uma matriz
+Se a matriz anterior de `s` for muito pequena para caber todos os valores uma matriz
 gigante será alocada. O slice retornado apontara para a nova matriz alocada.
 
 (Para aprendar mais sobre slices, leia o artigo [[http://golang.org/doc/articles/slices_usage_and_internals.html][Slices: usage and internals]].)
