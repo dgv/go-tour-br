@@ -34,14 +34,15 @@ Mas é um bom estilo usar a declaração de importação consignada.
 
 * Nomes exportados
 
-Depois de importar um pacote, você pode consultar os nomes que exporta.
+Em Go, um nome é exportado se ele começa com uma letra maiúscula. Por exemplo, `Pizza` é um nome exportado, assim como `Pi`, que é exportado do pacote `math`.
 
-Em Go, um nome é exportado se começa com uma letra maiúscula.
+`pizza` e `pi` não começam com uma letra maiúscula, logo eles não são exportados.
 
-`Foo`  é um nome exportado, assim como `FOO`.
-O nome `foo` não é exportado.
+Ao importar um pacote, você pode referenciar apenas seus nomes exportados. Todos os nomes "não exportados" não são acessíveis de fora do pacote.
 
-Execute o código. Em seguida, renomeie `math.pi` para `math.Pi` e tente novamente.
+Execute o código. Observe a mensagem de erro.
+
+Para corrigir o erro, renomeie `math.pi` para `math.Pi` e tente novamente.
 
 .play basics/exported-names.go
 
