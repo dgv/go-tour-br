@@ -71,7 +71,7 @@ A expressão
 
 declara a variável `a` com uma matriz de dez inteiros.
 
-O tamanho da matriz é parte de seu tipo, logo, matrizes não podem ser redimencionadas.
+O tamanho da matriz é parte de seu tipo, logo, matrizes não podem ser redimensionadas.
 Isso parece uma limitação, mas não se preocupe;
 Go dispões de uma maneira conveniente para trabalhar com matrizes.
 
