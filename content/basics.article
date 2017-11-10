@@ -61,7 +61,7 @@ Observe que o tipo vem _após_ o nome da variável.
 * Funções continuação
 
 Quando dois ou mais consecutivos parâmetros da função nomeados compartilhar um tipo, você pode omitir o tipo de todos, menos o último.
-
+Quando dois ou mais parâmetros nomeados consecutivos de uma função compartilham o mesmo tipo, você pode omitir o tipo de todos menos o último.
 Neste exemplo, vamos encurtar
 
 	x int, y int
