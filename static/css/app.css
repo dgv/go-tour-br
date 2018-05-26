@@ -199,6 +199,12 @@ ul {
 .menu-button.active {
     background: #fff;
 }
+.menu-button[imports-checkbox]:after {
+    content: ' off';
+}
+.menu-button[imports-checkbox].active:after {
+    content: ' on';
+}
 .menu-button[syntax-checkbox]:after {
     content: ' off';
 }
@@ -211,7 +217,7 @@ ul {
 a#run, a#kill {
     background-color: #375eab;
     color: #fff;
-    width: 60px;
+    width: 70px;
     text-align: center;
 }
 #run:hover:not(:active), #kill:hover:not(:active) {
@@ -242,6 +248,9 @@ a#run, a#kill {
     height: 32px;
     padding-left: 30px;
     background: #fafafa;
+}
+#explorer .imports-checkbox {
+    float: right;
 }
 #explorer .menu-button.active {
     cursor: default;
@@ -290,7 +299,7 @@ a#run, a#kill {
         top: 0;
         bottom: 0;
         left: 0;
-        width: 50%;
+        width: 60%;
         overflow: hidden;
     }
     .output {

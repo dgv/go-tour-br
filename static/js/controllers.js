@@ -22,7 +22,7 @@ controller('EditorCtrl', ['$scope', '$routeParams', '$location', 'toc', 'i18n', 
                 var f = file();
                 return f && f.Content;
             }, function(val) {
-                storage.set(file().Hash, val);
+                if (val) storage.set(file().Hash, val);
             });
         });
 
@@ -47,6 +47,7 @@ controller('EditorCtrl', ['$scope', '$routeParams', '$location', 'toc', 'i18n', 
             $scope.gotoPage($scope.curPage - 1);
         };
         $scope.gotoPage = function(page) {
+            $scope.kill();
             var l = $routeParams.lessonId;
             if (page >= 1 && page <= lessons[$scope.lessonId].Pages.length) {
                 $scope.curPage = page;
@@ -96,7 +97,7 @@ controller('EditorCtrl', ['$scope', '$routeParams', '$location', 'toc', 'i18n', 
 
         $scope.format = function() {
             log('info', i18n.l('waiting'));
-            fmt(file().Content).then(
+            fmt(file().Content, editor.imports).then(
                 function(data) {
                     if (data.data.Error !== '') {
                         log('stderr', data.data.Error);

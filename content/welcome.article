@@ -79,6 +79,11 @@ Clique no [[javascript:highlightAndClick(".next-page")]["próximo"]] botão ou a
 #appengine: 
 #appengine: 	go tool tour
 #appengine: 
+#appengine: Ou, você pode instalar e executar o tour manualmente, se você tiver qualquer problema executando o comando acima:
+#appengine: 
+#appengine:  go get golang.org/x/tour/gotour
+#appengine:  gotour
+#appengine:
 #appengine: O programa do tour irá abrir no seu navegador mostrando
 #appengine: sua versão local do tour.
 #appengine: 

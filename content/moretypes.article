@@ -33,8 +33,6 @@ Diferente de C, Go não faz aritimética de ponteiros.
 
 A `struct` é uma coleção de campos.
 
-(E uma declaração `type` faz o que você espera.)
-
 .play moretypes/structs.go
 
 * Campos Struct
@@ -47,7 +45,7 @@ Campos Struct são acessados ​​através de um ponto.
 
 Campos de estruturas podem ser acessados através de um ponteiro de estrutura.
 
-A indireção através do ponteiro é transparente.
+Para acessar o campo `X` de uma struct quando tivermos o ponteiro `p` da struct podemos escrever `(*p).X`. No entanto, essa notação é incômoda, então a linguagem nos permite escrever apenas `p.X`, sem a referência explícita.
 
 .play moretypes/struct-pointers.go
 
@@ -73,7 +71,7 @@ declara a variável `a` com uma matriz de dez inteiros.
 
 O tamanho da matriz é parte de seu tipo, logo, matrizes não podem ser redimensionadas.
 Isso parece uma limitação, mas não se preocupe;
-Go dispões de uma maneira conveniente para trabalhar com matrizes.
+Go dispõe de uma maneira conveniente para trabalhar com matrizes.
 
 .play moretypes/array.go
 
@@ -86,10 +84,18 @@ Na prática, as slices são muito mais comuns do que as matrizes.
 
 O tipo `[]T` é uma slice com elementos do tipo `T`.
 
-Essa expressão cria uma slice dos primeiros cinco elementos do array  `a`:
+Uma slice é fomada pela especificação de dois indices, um limite menor e 
+maior, separados por dois pontos: 
 
-	a[0:5]
+	a[low : high]
 
+Este seleciona um intervalo meio-aberto que inclui o primeiro
+elemento, mas exclui o último.
+
+A expressão a seguir cria uma slice que inclui
+os elementos de 1 à 3 de `a`:
+
+	a[1:4]
 
 .play moretypes/slices.go
 
@@ -198,7 +204,7 @@ As slices podem conter qualquer tipo, incluindo outras slices.
 
 * Adicionando elementos em uma slice
 
-É comum acrescentar novos elementos em uma slice, então Go dispões de uma função
+É comum acrescentar novos elementos em uma slice, então Go dispõe de uma função
 padrão para isso o `append`. A [[http://golang.org/pkg/builtin/#append][documentação]]
 do pacote padrão descreve melhor o `append`.
 
@@ -220,6 +226,8 @@ gigante será alocada. A slice retornada apontará para a nova matriz alocada.
 * Range
 
 O `range` do laço `for` itera sobre uma slice ou map.
+
+Ao variar sobre uma slice, dois valores são retornados para cada iteração. O primeiro é o índice, o segundo uma cópia do elemento daquele índice.
 
 .play moretypes/range.go
 
@@ -247,7 +255,9 @@ A escolha da imagem é com você. Funções interessantes incluem `x^y`, `(x+y)/
 
 Um map mapeia chaves para valores.
 
-Maps devem ser criados com `make` (não com `new`) antes do uso, o map `nil` está vazio e não pode ser atribuído.
+O valor zero de um map é `nil`. Um map `nil` não tem chaves, nem chaves podem ser adicionadas.
+
+A função `make` retorna um map com um tipo determinado, inicializado e pronto para o uso.
 
 .play moretypes/maps.go
 
@@ -281,10 +291,14 @@ Teste que uma chave está presente com dois valores:
 
 	elem, ok = m[key]
 
-Se `key` está em `m`, `ok` é `true`. Se não, `ok` é `false` e `elem` tem valor zero pro elemento tipo do map.
+Se `key` está em `m`, `ok` é `true`. Se não, `ok` é `false`.
 
-Da mesma forma, durante a leitura de um mapa se a chave não estiver presente, o resultado é o valor zero para o tipo de mapa do elemento.
+Se `key` não está no map então  `elem` tem valor zero para o elemento do tipo do map.
 
+_Nota_: Se `elem` ou `ok` não foi declarado ainda você pode usar esta forma de declaração curta:
+
+	elem, ok := m[key]
+ 
 .play moretypes/mutating-maps.go
 
 * Exercício: Maps
@@ -297,15 +311,19 @@ Você pode achar [[http://golang.org/pkg/strings/#Fields][strings.Fields]] útil
 
 * Funções valores
 
-Funções são valores também.
+Funções são valores também. Elas podem ser passadas  assim como outros valores.
+
+Funções valores podem ser usadas como argumentos de funções e retornar valores.
 
 .play moretypes/function-values.go
 
 * Funções closures
 
-E as funções são closures completos.
+As funções Go podem ser closures. Um closure é uma função valor que referencia variáveis
+de fora de seu corpo. A função pode acessar e atribuir nas variáveis referenciadas; nesse sentido 
+a função é "limitada" às variáveis.
 
-A função `adder` retorna um closure. Cada closure abriga sua própria variável `sum`.
+Por exemplo, a função `adder` retorna um closure. Cada closure limita sua própria variável `sum`.
 
 .play moretypes/function-closures.go
 
@@ -313,7 +331,7 @@ A função `adder` retorna um closure. Cada closure abriga sua própria variáve
 
 Vamos nos divertir um pouco com as funções.
 
-Implemente uma função `fibonacci` que retorna uma função (um closure) que retorna números sucessivos de Fibonacci.
+Implemente uma função `fibonacci` que retorna uma função (um closure) que retorna [[https://pt.wikipedia.org/wiki/N%C3%BAmero_de_Fibonacci][números sucessivos de Fibonacci]] (0, 1, 1, 2, 3, 5, ...).
 
 .play moretypes/exercise-fibonacci-closure.go
 

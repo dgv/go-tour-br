@@ -10,9 +10,10 @@ Cada programa Go é composto de pacotes.
 
 Programas começam rodando pelo pacote `main`.
 
-Este programa está usando os pacotes com caminhos de importação `"fmt"` e `"math"`.
+Este programa está usando os pacotes com caminhos de importação `"fmt"` e `"math/rand"`.
 
 Por convenção, o nome do pacote é o mesmo que o último elemento do caminho de importação.
+Por exemplo, o pacote `"math/rand"` compreende arquivos que começam com `package`rand`.
 
 #appengine: *Nota*: o ambiente em que esses programas são executados é
 #appengine: determinístico, então rand.Intn sempre retornará o mesmo número.
@@ -76,7 +77,7 @@ para
 
 Uma função pode retornar qualquer número de resultados.
 
-Esta função retorna duas strings.
+A função `swap` retorna duas strings.
 
 .play basics/multiple-results.go
 
@@ -140,6 +141,8 @@ O exemplo mostra vários tipos de variáveis
 e também que as declarações de variáveis podem ser "construidas" em blocos,
 como com as declarações de importação.
 
+Os tipos `int`, `uint` e `uintptr` são geralmente de 32 bits em sistemas de 32 bits e 64 bits em sistemas de 64 bits. Quando você precisar de um valor inteiro deverá usar `int`, a menos que tenha um motivo específico para usar um tipo de inteiro com tamanho especificado ou sem sinal.
+
 .play basics/basic-types.go
 
 * Valores zero
@@ -178,7 +181,7 @@ Tente remover as conversões `float64` ou `int` no exemplo e veja o que acontece
 
 * Inferência de tipo
 
-Ao declarar uma variável, sem especificar o seu tipo (usando `var` sem um tipo ou na sitaxe `:=`), o tipo da variável é _inferida_ a partir do valor do lado direito.
+Ao declarar uma variável, sem especificar o seu tipo (usando `var` sem um tipo ou na sintaxe `:=`), o tipo da variável é _inferida_ a partir do valor do lado direito.
 
 Quando o lado direito da declaração é digitado, a nova variável é do mesmo tipo:
 
@@ -191,7 +194,7 @@ Mas, quando o lado direito contém uma constante numérica não tipificada, a no
 	f := 3.142        // float64
 	g := 0.867 + 0.5i // complex128
 
-Tente alterar o valor inicial de `V` no código de exemplo e observar como seu tipo é afetado.
+Tente alterar o valor inicial de `v` no código de exemplo e observar como seu tipo é afetado.
 
 .play basics/type-inference.go
 
@@ -212,6 +215,8 @@ Constantes numéricas também são _valores_ de alta-precisão.
 Uma constante sem tipo pega o tipo necessário pelo seu contexto.
 
 Tente mostrar `needInt(Big)` também.
+
+(Um `int` pode armazar no máximo um inteiro de 64 bits, e as vezes menos.)
 
 .play basics/numeric-constants.go
 

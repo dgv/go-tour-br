@@ -1,5 +1,5 @@
 Concorrência
-Go dispões de estruturas de concorrência como parte do núcleo da linguagem. Estas lições apresentaram elas e darão alguns examplos sobre como usa-las.
+Go dispõe de estruturas de concorrência como parte do núcleo da linguagem. Estas lições apresentam elas e dão alguns examplos sobre como usá-las.
 
 Os Autores de Go
 http://golang.org
@@ -16,7 +16,7 @@ inicia uma nova execução goroutine
 
 A avaliação de `f`, `x`, `y`, e `z` acontece na goroutine corrente e para a execução de f acontece em uma goroutine nova.
 
-Goroutines executam no mesmo espaço de endereço, para que o acesso à memória compartilhada seja sincronizada. O pacote [[http://golang.org/pkg/sync/][sync]] fornece as primitivas úteis, embora você não vá precisar muito deles em Go, pois há outras primitivas. (Veja o próximo slide).
+Goroutines executam no mesmo espaço de endereço, para que o acesso à memória compartilhada seja sincronizada. O pacote [[http://golang.org/pkg/sync/][`sync`]] fornece as primitivas úteis, embora você não vá precisar muito deles em Go, pois há outras primitivas. (Veja o próximo slide).
 
 .play concurrency/goroutines.go
 
@@ -35,6 +35,8 @@ Como maps e slices, os canais devem ser criados antes de se usar:
 	ch := make(chan int)
 
 Por padrão, enviam e recebem bloco até o outro lado estar pronto. Isso permite que goroutines sincronizem sem bloqueios explícitos ou variáveis ​​de condição.
+
+O código do exemplo soma os números em uma slice, distribuindo o trabalho entre duas goroutines. Uma vez que ambas as goroutines completaram seu processamento, calcula o resultado final.
 
 .play concurrency/channels.go
 
@@ -105,6 +107,10 @@ Este exemplo utiliza o pacote `tree`, o qual define o tipo:
 		Right *Tree
 	}
 
+Continuação da descrição na [[javascript:click('.next-page')][próxima página]].
+
+.play concurrency/exercise-equivalent-binary-trees.go
+
 * Exercício: árvores binárias equivalentes
 
 *1.* Implemente a função `Walk`.
@@ -121,9 +127,11 @@ Então leia e imprima 10 valores do canal. Deve ser os números 1, 2, 3, ..., 10
 
 *3.* Implementar a função `Same` usando `Walk` para determinar se `t1` e `t2` armazenam os mesmos valores.
 
-*4.* Teste a função `Mesma`.
+*4.* Teste a função `Same`.
 
 `Same(tree.New(1),`tree.New(1))` deve retornar true, e `Same(tree.New(1),`tree.New(2))` deve retornar false.
+
+A documentação da `Tree` pode ser encontrada [[https://godoc.org/golang.org/x/tour/tree#Tree][aqui]].
 
 .play concurrency/exercise-equivalent-binary-trees.go
 
@@ -153,6 +161,9 @@ Neste exercício, você vai usar os recursos da concorrência de Go para paralel
 
 Modifique a função `Crawl` para buscar URLs em paralelo, sem buscar a mesma URL duas vezes.
 
+_Dica_: você pode mander um cache de URLs que foram buscadas no map, mas maps sozinhos não são 
+seguros para uso concorrente!
+
 .play concurrency/exercise-web-crawler.go
 
 * Para onde ir a partir daqui...
@@ -174,7 +185,7 @@ Para explorar ainda mais a concorrência no modelo de Go, consulte a [[http://go
 
 O [[http://golang.org/doc/codewalk/functions/][First Class Functions in Go]] codewalk dá uma perspectiva interessante sobre tipos de funções em Go.
 
-O [[http://blog.golang.org/][Go Blog]] tem um grande arquivo de artigos informativos de Go. Além do [[http://blog.golangbr.org/][Blog Golang Brasil]] da comunidade brasileira.
+O [[http://blog.golang.org/][Go Blog]] tem um grande arquivo de artigos informativos de Go. 
 
 Participe da lista de discussão brasileira [[http://groups.google.com/group/golang-brasil][Golang Brasil]].
 

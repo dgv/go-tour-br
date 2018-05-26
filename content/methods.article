@@ -7,11 +7,13 @@ http://golang.org
 * Métodos
 
 Go não tem classes. 
-No entanto, você pode definir métodos em tipos struct.
+No entanto, você pode definir métodos em tipos.
 
-O _método_receptor_ aparece em sua lista de argumentos entre a própria palavra-chave `func` e o nome do método.
+O método é uma função com um argumento _receptor_  especial.
 
-Neste exemplo, o método `Abs` tem um receptor do tipo `Vertex` chamado `V`.
+O receptor aparece em sua lista de argumentos entre a própria palavra-chave `func` e o nome do método.
+
+Neste exemplo, o método `Abs` tem um receptor do tipo `Vertex` chamado `v`.
 
 .play methods/methods.go
 
@@ -141,7 +143,7 @@ Um tipo de interface é definida por um conjunto de métodos.
 
 Um valor de tipo de interface pode conter qualquer valor que implementa esses métodos.
 
-*Observe:* Tem um erro no exemple na linha 22.
+*Nota:* Tem um erro no exemple na linha 22.
 `Vertex` (do tipo valor) não satisfaz `Abser` porque
 o método `Abs` é definido apenas em `*Vertex` (do tipo ponteiro)
 
@@ -310,7 +312,7 @@ Um `error` nil indica sucesso; um `error` não-nil denota fracasso.
 
 * Exercício: Erros
 
-Copie o sua função `Sqrt` dos exercícios anteriores e modifique-o para retornar um valor de `error`.
+Copie o sua função `Sqrt` dos  [[/flowcontrol/8][exercícios anteriores]] e modifique-o para retornar um valor de `error`.
 
 `Sqrt` deve retornar um valor de erro não-nil quando recebe um número negativo, pois não suporta números complexos.
 
@@ -342,7 +344,7 @@ A interface `io.Reader` tem um método `Read`:
 
   func (T) Read(b []byte) (n int, err error)
 
-`Read` popula um slice de bytes passados com dados e retorna o número de bytes
+`Read` popula uma slice de bytes passados com dados e retorna o número de bytes
 populados e um valor de erro. Este retorna um erro `io.EOF` quando o fluxo termina.
 
 O exemplo de código cria um
@@ -364,11 +366,9 @@ Um padrão comum é um [[http://golang.org/pkg/io/#Reader][io.Reader]] que envol
 
 Por exemplo, a função [[http://golang.org/pkg/compress/gzip/#NewReader][gzip.NewReader]] recebe um `io.Reader` (um fluxo de dados compactado) e retorna um `*gzip.Reader` que também implementa `io.Reader` (um fluxo de dados descomprimidos).
 
-Implemente um `rot13Reader` que implementa um `io.Reader` que leia a partir de um  `io.Reader` , modificando o fluxo através da aplicação da cifra [[http://en.wikipedia.org/wiki/ROT13][ROT13]] de substituição para todos os caracteres alfabéticos.
+Implemente um `rot13Reader` que implementa um `io.Reader` que leia a partir de um  `io.Reader` , modificando o fluxo através da aplicação da cifra [[https://pt.wikipedia.org/wiki/ROT13][rot13]] de substituição para todos os caracteres alfabéticos.
 
-O tipo `rot13Reader` é fornecido para você.
-
-Você deve torná-lo um `io.Reader` através da implementação de seu método `Read`.
+O tipo `rot13Reader` é fornecido para você. Torne-o em um `io.Reader` através da implementação de seu método `Read`.
 
 .play methods/exercise-rot-reader.go
 
@@ -384,9 +384,13 @@ O [[http://golang.org/pkg/image/#Image][package image]] define a interface `Imag
 		At(x, y int) color.Color
 	}
 
+*Nota*: o `Rectangle` retorna valores do método `Bounds` que na realidade é um 
+[[https://golang.org/pkg/image/#Rectangle][`image.Rectangle`]], como na
+declaração está dentro do pacote `image`.
+
 (Veja [[http://golang.org/pkg/image/#Image][a documentação]] para todos os detalhes)
 
-Além disso, `color.Color` e `color.Model` são interfaces, mas vamos ignorar isso usando as implementações predefinidas `color.RGBA` e `color.RGBAModel`.
+Os tipos `color.Color` e `color.Model` são interfaces também, mas nós vamos ignorar isso usando implementações pré-definidas `color.RGBA` e `color.RGBAModel`. Essas interfaces e tipo são especificados pelo [[https://golang.org/pkg/image/color/][pacote image/color]]
 
 .play methods/images.go
 
