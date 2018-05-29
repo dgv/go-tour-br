@@ -143,7 +143,7 @@ Um tipo de interface é definida por um conjunto de métodos.
 
 Um valor de tipo de interface pode conter qualquer valor que implementa esses métodos.
 
-*Nota:* Tem um erro no exemple na linha 22.
+*Nota:* Tem um erro no exemplo na linha 22.
 `Vertex` (do tipo valor) não satisfaz `Abser` porque
 o método `Abs` é definido apenas em `*Vertex` (do tipo ponteiro)
 
