@@ -110,7 +110,7 @@ Ele funciona bem para muitas funções, mas especialmente bem para a raiz quadra
 Uma instrução `switch` é uma forma mais curta de escrever uma sequência de declarações `if`-`else`.
 Ele executa o primeiro caso cujo valor é igual à expressão de condição.
 
-O switch do Go é como o em C, C ++, Java, JavaScript e PHP,
+O switch do Go é como o do C, C ++, Java, JavaScript e PHP,
 exceto que o Go apenas executa o caso selecionado, não todos os casos que seguem.
 De fato, a declaração `break` que é necessária no final de cada case naquelas
 linguagens é fornecido automaticamente no Go.
