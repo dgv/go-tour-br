@@ -219,7 +219,7 @@ original mais os valores providos.
 Se a matriz anterior de `s` for muito pequena para caber todos os valores uma matriz
 gigante será alocada. A slice retornada apontará para a nova matriz alocada.
 
-(Para aprendar mais sobre slices, leia o artigo [[http://golang.org/doc/articles/slices_usage_and_internals.html][Slices: usage and internals]].)
+(Para aprender mais sobre slices, leia o artigo [[http://golang.org/doc/articles/slices_usage_and_internals.html][Slices: usage and internals]].)
 
 .play moretypes/append.go
 
