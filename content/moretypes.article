@@ -78,7 +78,7 @@ Go dispõe de uma maneira conveniente para trabalhar com matrizes.
 * Slices
 
 Uma matriz tem um tamanho fixo.
-Uma slice, por outro lado, é dinâmicamente redimencionada,
+Uma slice, por outro lado, é dinamicamente redimensionada,
 uma visão flexível dos elementos de uma matriz.
 Na prática, as slices são muito mais comuns do que as matrizes.
 
