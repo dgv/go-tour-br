@@ -1,0 +1,16 @@
+sudo: required
+services:
+- docker
+language: go
+go:
+- '1.10'
+deploy:
+  provider: gae
+  keyfile: 'go-tour-br-ac10f786ddbd.json'
+  project: go-tour-br
+  skip_cleanup: true
+  verbosity: debug
+  on: master
+before_install:
+- openssl aes-256-cbc -K $encrypted_79b8d7b15e0e_key -iv $encrypted_79b8d7b15e0e_iv
+  -in go-tour-br-ac10f786ddbd.json.enc -out go-tour-br-ac10f786ddbd.json -d
