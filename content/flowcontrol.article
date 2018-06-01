@@ -112,7 +112,7 @@ Ele executa o primeiro caso cujo valor é igual à expressão de condição.
 
 O switch do Go é como o do C, C ++, Java, JavaScript e PHP,
 exceto que o Go apenas executa o caso selecionado, não todos os casos que seguem.
-De fato, a declaração `break` que é necessária no final de cada case naquelas
+De fato, a declaração `break` que é necessária no final de cada caso naquelas
 linguagens é fornecido automaticamente no Go.
 Outra diferença importante é que os cases dos switchs do Go não precisam
 ser constantes, e os valores envolvidos não precisam ser inteiros.
@@ -161,7 +161,7 @@ Chamadas de funções adiadas são empurradas por uma pilha. Quando a função r
 as chamadas de adiamento são executadas na ordem em que a última a entrar é a primeira
 a sair.
 
-Para aprender mais sobre a declaração defer leia isso
+Para aprender mais sobre a declaração defer leia este
 [[http://blog.golang.org/defer-panic-and-recover][blog post]].
 
 .play flowcontrol/defer-multi.go
