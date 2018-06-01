@@ -23,3 +23,5 @@ handlers:
   secure: always
 
 nobuild_files: (solutions|content)/.*
+skip_files:
+- go-tour-br
