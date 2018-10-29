@@ -88,7 +88,7 @@ e com que rapidez a aproximação melhora.
 Dica: para declarar e inicializar um valor de ponto flutuante,
 dê a ela uma sintaxe de ponto flutuante ou use uma conversão:
 
-	z: = 1,0
+	z: = 1.0
 	z: = float64 (1)
 
 Em seguida, altere a condição de loop para parar quando o valor for interrompido
