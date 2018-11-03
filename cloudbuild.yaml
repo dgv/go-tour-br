@@ -1,6 +1,7 @@
 steps:
 - name: "gcr.io/cloud-builders/go"
   args: ["get", "."]
+  env: ["PROJECT_ROOT=github.com/golangbr/go-tour-br"]
 - name: "gcr.io/cloud-builders/gcloud"
   args: ["app", "deploy"]
 timeout: "1600s"
