@@ -4,6 +4,7 @@ go:
 - 1.10.x
 git:
   depth: 1
+install: true
 notifications:
   email: false
 deploy:
