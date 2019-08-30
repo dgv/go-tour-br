@@ -123,7 +123,7 @@ Neste caso, o método que chama `p.Abs()` é interpretado como `(*p).Abs()`.
 
 Há duas razões para usar um receptor de ponteiro.
 
-O primeiro é para que o método possa modificar o valor que os seus pontos de receptor.
+O primeiro é para que o método possa modificar o valor que os seus pontos de receptor referenciam.
 
 A segunda é para evitar copiar o valor de cada chamada de método.
 Isto pode ser mais eficaz se o receptor for uma estrutura grande, por exemplo.
@@ -288,7 +288,7 @@ Por exemplo, `IPAddr{1,`2,`3,`4}` deve ser mostrado como `"1.2.3.4"`.
 
 Programas Go expressam estados de erro com valores `error`.
 
-O tipo `error` é uma interface built-in simliar a `fmt.Stringer`:
+O tipo `error` é uma interface built-in similar a `fmt.Stringer`:
 
 	type error interface {
 		Error() string
