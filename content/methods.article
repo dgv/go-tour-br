@@ -40,7 +40,7 @@ pacote (o qual inclui os tipos padrões tais como `int`).
 
 * Ponteiro receptor 
 
-Você pode declarar métodos com ponteiro receptor .
+Você pode declarar métodos com ponteiro receptor.
 
 Isso significa que o tipo de receptor tem a sintaxe literal `*t` por algum tipo `t`.
 (Além disso, `t` não pode ser ele próprio, um ponteiro como `*int`.)
@@ -220,12 +220,12 @@ e atribui o valor de `T` subjacente à variável `t`.
 Se `i` não detém uma `T`, a declaração irá desencadear um erro pânico.
 
 Para _testar_ se um valor de interface possui um tipo específico,
-uma type assertation pode retornar  dois valores: o valor subjacente
+uma _type assertation_ pode retornar dois valores: o valor subjacente
 e um valor booleano que informa se a afirmação é correta.
 
-	t, ok: = i (T).
+	t, ok := i.(T)
 
-Se `i` detém `T`, então `t` será o valor subjacente e `ok` será verdade.
+Se `i` detém `T`, então `t` será o valor subjacente e `ok` será _true_.
 
 Se não, `ok` será falso e `t` será o valor zero do tipo `T`,
 e sem ocorrer erro pânico.
@@ -236,9 +236,9 @@ Note a semelhança entre esta sintaxe e  da leitura de um map.
 
 * Type Switch
 
-Um _type_switch_ é uma construção que permite diversas type assertations em série.
+Um _type_switch_ é uma construção que permite diversas _type assertations_ em série.
 
-Um type switch é como uma instrução switch regular, mas os casos em um type switch especificam os tipos (e não valores), e esses valores são comparados com
+Um _type switch_ é como uma instrução `switch` regular, mas os _cases_ em um _type switch_ especificam os tipos (e não valores), e esses valores são comparados com
 o tipo dos valores determinados da interface informada.
 
 	switch v := i.(type) {
@@ -250,14 +250,14 @@ o tipo dos valores determinados da interface informada.
 		// sem correspondênte; aqui V tem o mesmo tipo I
 	}
 
-A declaração em um type switch tem a mesma sintaxe como uma afirmação de tipo de  `i.(T)`,
+A declaração em um _type switch_ tem a mesma sintaxe como uma afirmação de tipo de `i.(T)`,
 mas o tipo específico `t` é substituído com a palavra-chave `type`.
 
 Nisso a instrução switch testa se o valor de interface `i`
 detém um valor de tipo `T` ou `S`.
 Em cada um dos casos `T` e `S`, a variável `v` será do tipo
 `T` ou `S` respectivamente e guarda o valor mantido por `i`.
-No caso padrão (onde não houver correspondência), a variável `v` é
+No _case_ `default` (onde não houver correspondência), a variável `v` é
 do mesmo tipo e valor da interface `i`.
 
 .play methods/type-switches.go
@@ -270,7 +270,7 @@ Uma das interfaces mais ubíqua é a [[//golang.org/pkg/fmt/#Stringer][`Stringer
 		String() string
 	}
 
-A `Stringer` é um tipo que pode descrever-se como uma string. O pacote `fmt`
+A `Stringer` é um tipo que pode descrever-se como uma `string`. O pacote `fmt`
 (e muitos outros) olham para essa interface para mostrar valores.
 
 .play methods/stringer.go
@@ -288,7 +288,7 @@ Por exemplo, `IPAddr{1,`2,`3,`4}` deve ser mostrado como `"1.2.3.4"`.
 
 Programas Go expressam estados de erro com valores `error`.
 
-O tipo `error` é uma interface built-in simliar a `fmt.Stringer`:
+O tipo `error` é uma interface embutida similar a `fmt.Stringer`:
 
 	type error interface {
 		Error() string
@@ -312,7 +312,7 @@ Um `error` nil indica sucesso; um `error` não-nil denota fracasso.
 
 * Exercício: Erros
 
-Copie o sua função `Sqrt` dos  [[/flowcontrol/8][exercícios anteriores]] e modifique-o para retornar um valor de `error`.
+Copie o sua função `Sqrt` dos [[/flowcontrol/8][exercícios anteriores]] e modifique-o para retornar um valor de `error`.
 
 `Sqrt` deve retornar um valor de erro não-nil quando recebe um número negativo, pois não suporta números complexos.
 
@@ -344,7 +344,7 @@ A interface `io.Reader` tem um método `Read`:
 
   func (T) Read(b []byte) (n int, err error)
 
-`Read` popula uma slice de bytes passados com dados e retorna o número de bytes
+`Read` popula uma _slice_ de bytes passados com dados e retorna o número de bytes
 populados e um valor de erro. Este retorna um erro `io.EOF` quando o fluxo termina.
 
 O exemplo de código cria um
@@ -398,7 +398,7 @@ Os tipos `color.Color` e `color.Model` são interfaces também, mas nós vamos i
 
 Lembre-se o gerador de imagem que escrevi anteriormente? Vamos escrever outro, mas desta vez ele irá retornar uma implementação de `image.Image` em vez de uma slice de dados.
 
-Definir a seu próprio tipo `Image`, implemente [[http://golang.org/pkg/image/#Image][os métodos necessários]], e chame `pic.ShowImage`.
+Defina seu próprio tipo `Image`, implemente [[http://golang.org/pkg/image/#Image][os métodos necessários]], e chame `pic.ShowImage`.
 
 `Bounds` deve retornar um `image.Rectangle`, como `image.Rect(0,`0,`w,`h)`.
 
