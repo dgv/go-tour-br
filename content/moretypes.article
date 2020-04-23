@@ -303,7 +303,7 @@ _Nota_: Se `elem` ou `ok` não foi declarado ainda você pode usar esta forma de
 
 * Exercício: Maps
 
-Implementar `WordCount`. Ele deve retornar um map das contagens de cada &ldquo;word&rdquo; na string `s`. A função `wc.Test` executa um conjunto de testes contra a função fornecida e imprime o sucesso ou falha.
+Implementar `WordCount`. Ele deve retornar um map das contagens de cada "word" na string `s`. A função `wc.Test` executa um conjunto de testes contra a função fornecida e imprime o sucesso ou falha.
 
 Você pode achar [[http://golang.org/pkg/strings/#Fields][strings.Fields]] útil.
 

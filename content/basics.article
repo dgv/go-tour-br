@@ -137,7 +137,7 @@ Os tipos básicos de Go são
 	complex64 complex128
 
 O exemplo mostra vários tipos de variáveis
-e também que as declarações de variáveis podem ser "construidas" em blocos,
+e também que as declarações de variáveis podem ser "construídas" em blocos,
 como com as declarações de importação.
 
 Os tipos `int`, `uint` e `uintptr` são geralmente de 32 bits em sistemas de 32 bits e 64 bits em sistemas de 64 bits. Quando você precisar de um valor inteiro deverá usar `int`, a menos que tenha um motivo específico para usar um tipo de inteiro com tamanho especificado ou sem sinal.
@@ -215,7 +215,7 @@ Uma constante sem tipo pega o tipo necessário pelo seu contexto.
 
 Tente mostrar `needInt(Big)` também.
 
-(Um `int` pode armazar no máximo um inteiro de 64 bits, e as vezes menos.)
+(Um `int` pode armazenar no máximo um inteiro de 64 bits, e às vezes menos.)
 
 .play basics/numeric-constants.go
 
