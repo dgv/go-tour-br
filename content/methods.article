@@ -189,7 +189,7 @@ Nota-se que um valor de interface que contém um valor nulo concreto é por si n
 
 Um valor de interface nil detém nem o valor nem tipo concreto.
 
-Chamar um método em uma interface nila resulta em um erro de tempo de execução porque não há
+Chamar um método em uma interface nil resulta em um erro de tempo de execução porque não há
 um tipo dentro da tupla de interface para indicar qual o _método_concreto_ a chamar.
 
 .play methods/nil-interface-values.go
