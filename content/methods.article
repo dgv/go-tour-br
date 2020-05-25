@@ -165,7 +165,7 @@ tipo concreto:
 
 	(valor, tipo)
 
-Uma valor de uma interface contém um valor de um tipo concreto subjacente específico.
+Um valor de uma interface contém um valor de um tipo concreto subjacente específico.
 
 Chamando um método em um valor de interface executa o método do mesmo nome no
 seu tipo subjacente.
