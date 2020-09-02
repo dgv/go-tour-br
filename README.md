@@ -1,6 +1,6 @@
 ## Um tour por Go
 
-[![Build Status](https://travis-ci.org/golangbr/go-tour-br.svg?branch=master)](https://travis-ci.org/golangbr/go-tour-br)
+[![Build Status](https://travis-ci.org/dgv/go-tour-br.svg?branch=master)](https://travis-ci.org/dgv/go-tour-br)
 
 Este é um tour por Go, uma introdução à linguagem de programação Go.
 
