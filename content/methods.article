@@ -236,9 +236,9 @@ Note a semelhança entre esta sintaxe e  da leitura de um map.
 
 * Type Switch
 
-Um _type_switch_ é uma construção que permite diversas _type assertations_ em série.
+Um _type_switch_ é uma construção que permite diversas _type_assertations_ em série.
 
-Um _type switch_ é como uma instrução `switch` regular, mas os _cases_ em um _type switch_ especificam os tipos (e não valores), e esses valores são comparados com
+Um _type_switch_ é como uma instrução `switch` regular, mas os _cases_ em um _type_switch_ especificam os tipos (e não valores), e esses valores são comparados com
 o tipo dos valores determinados da interface informada.
 
 	switch v := i.(type) {
