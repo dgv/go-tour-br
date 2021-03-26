@@ -80,8 +80,8 @@ Comparando os dois programas anteriores, você pode notar que
 funções com um argumento de ponteiro deve ter um ponteiro:
 
 	var v Vertex
-	ScaleFunc(v)  // Erro de compilação!
-	ScaleFunc(&v) // OK
+	ScaleFunc(v, 5)  // Erro de compilação!
+	ScaleFunc(&v, 5) // OK
 
 enquanto que os métodos com receptores ponteiro assumem um valor ou um ponteiro como o receptor quando eles são chamados:
 
@@ -91,9 +91,9 @@ enquanto que os métodos com receptores ponteiro assumem um valor ou um ponteiro
 	p.Scale(10) // OK
 
 
-Para a instrução `v.Scale(5)` , embora `V` seja um valor e não um ponteiro,
+Para a instrução `v.Scale(5)` , embora `v` seja um valor e não um ponteiro,
 o método com o receptor ponteiro é chamado automaticamente.
-Ou seja, por conveniência, Go interpreta a declaração `v.Scale(5)` como `(&V).Scale(5)` uma vez que o método `Scale` tem um receptor de ponteiro.
+Ou seja, por conveniência, Go interpreta a declaração `v.Scale(5)` como `(&v).Scale(5)` uma vez que o método `Scale` tem um receptor de ponteiro.
 
 .play methods/indirection.go
 
@@ -236,9 +236,9 @@ Note a semelhança entre esta sintaxe e  da leitura de um map.
 
 * Type Switch
 
-Um _type_switch_ é uma construção que permite diversas _type assertations_ em série.
+Um _type_switch_ é uma construção que permite diversas _type_assertations_ em série.
 
-Um _type switch_ é como uma instrução `switch` regular, mas os _cases_ em um _type switch_ especificam os tipos (e não valores), e esses valores são comparados com
+Um _type_switch_ é como uma instrução `switch` regular, mas os _cases_ em um _type_switch_ especificam os tipos (e não valores), e esses valores são comparados com
 o tipo dos valores determinados da interface informada.
 
 	switch v := i.(type) {
@@ -306,13 +306,13 @@ testando se o erro é igual a `nil`.
 	}
 	fmt.Println("Inteiro convertido:", i)
 
-Um `error` nil indica sucesso; um `error` não-nil denota fracasso.
+Um `error` nil indica sucesso; um `error` não-nil indica fracasso.
 
 .play methods/errors.go
 
 * Exercício: Erros
 
-Copie o sua função `Sqrt` dos [[/flowcontrol/8][exercícios anteriores]] e modifique-o para retornar um valor de `error`.
+Copie a sua função `Sqrt` dos [[/flowcontrol/8][exercícios anteriores]] e modifique-a para retornar um valor de `error`.
 
 `Sqrt` deve retornar um valor de erro não-nil quando recebe um número negativo, pois não suporta números complexos.
 
@@ -327,7 +327,7 @@ e faça-o dar `error`, dando-lhe um
 tal método que `ErrNegativeSqrt(-2).Error()` retorne `"cannot`Sqrt`negative`number:`-2"`.
 
 *Nota:* uma chamada para `fmt.Print(e)` dentro do método `Error` irá enviar o programa em um laço infinito. Você pode
-evitar isso através da conversão `e` em primeiro lugar: `fmt.Print(float64(e))`. Por que?
+evitar isso através da conversão `e` em primeiro lugar: `fmt.Print(float64(e))`. Por quê?
 
 Mude sua função `Sqrt` para retornar um valor `ErrNegativeSqrt` quando receber um número negativo.
 
@@ -396,7 +396,7 @@ Os tipos `color.Color` e `color.Model` são interfaces também, mas nós vamos i
 
 * Exercício: Imagens
 
-Lembre-se o gerador de imagem que escrevi anteriormente? Vamos escrever outro, mas desta vez ele irá retornar uma implementação de `image.Image` em vez de uma slice de dados.
+Lembra do gerador de imagem que você escreveu anteriormente? Vamos escrever outro, mas desta vez ele irá retornar uma implementação de `image.Image` em vez de uma slice de dados.
 
 Defina seu próprio tipo `Image`, implemente [[http://golang.org/pkg/image/#Image][os métodos necessários]], e chame `pic.ShowImage`.
 
@@ -404,7 +404,7 @@ Defina seu próprio tipo `Image`, implemente [[http://golang.org/pkg/image/#Imag
 
 `ColorModel` deve retornar `color.RGBAModel`.
 
-`At` deve retornar uma cor; o valor `v` no gerador última imagem corresponde a `color.RGBA{v,`v,`255,`255}` em um presente.
+`At` deve retornar uma cor; o valor `v` no último gerador de imagem corresponde a `color.RGBA{v,`v,`255,`255}` neste.
 
 .play methods/exercise-images.go
 
