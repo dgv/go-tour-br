@@ -1,5 +1,6 @@
 sudo: false
 language: go
+dist: focal
 go:
 - 1.12.x
 env:
