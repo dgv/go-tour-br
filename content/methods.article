@@ -396,7 +396,7 @@ Os tipos `color.Color` e `color.Model` são interfaces também, mas nós vamos i
 
 * Exercício: Imagens
 
-Lembre-se o gerador de imagem que escrevi anteriormente? Vamos escrever outro, mas desta vez ele irá retornar uma implementação de `image.Image` em vez de uma slice de dados.
+Lembra do gerador de imagem que você escreveu anteriormente? Vamos escrever outro, mas desta vez ele irá retornar uma implementação de `image.Image` em vez de uma slice de dados.
 
 Defina seu próprio tipo `Image`, implemente [[http://golang.org/pkg/image/#Image][os métodos necessários]], e chame `pic.ShowImage`.
 
@@ -404,7 +404,7 @@ Defina seu próprio tipo `Image`, implemente [[http://golang.org/pkg/image/#Imag
 
 `ColorModel` deve retornar `color.RGBAModel`.
 
-`At` deve retornar uma cor; o valor `v` no gerador última imagem corresponde a `color.RGBA{v,`v,`255,`255}` em um presente.
+`At` deve retornar uma cor; o valor `v` no último gerador de imagem corresponde a `color.RGBA{v,`v,`255,`255}` neste.
 
 .play methods/exercise-images.go
 
