@@ -306,13 +306,13 @@ testando se o erro é igual a `nil`.
 	}
 	fmt.Println("Inteiro convertido:", i)
 
-Um `error` nil indica sucesso; um `error` não-nil denota fracasso.
+Um `error` nil indica sucesso; um `error` não-nil indica fracasso.
 
 .play methods/errors.go
 
 * Exercício: Erros
 
-Copie o sua função `Sqrt` dos [[/flowcontrol/8][exercícios anteriores]] e modifique-o para retornar um valor de `error`.
+Copie a sua função `Sqrt` dos [[/flowcontrol/8][exercícios anteriores]] e modifique-a para retornar um valor de `error`.
 
 `Sqrt` deve retornar um valor de erro não-nil quando recebe um número negativo, pois não suporta números complexos.
 
@@ -327,7 +327,7 @@ e faça-o dar `error`, dando-lhe um
 tal método que `ErrNegativeSqrt(-2).Error()` retorne `"cannot`Sqrt`negative`number:`-2"`.
 
 *Nota:* uma chamada para `fmt.Print(e)` dentro do método `Error` irá enviar o programa em um laço infinito. Você pode
-evitar isso através da conversão `e` em primeiro lugar: `fmt.Print(float64(e))`. Por que?
+evitar isso através da conversão `e` em primeiro lugar: `fmt.Print(float64(e))`. Por quê?
 
 Mude sua função `Sqrt` para retornar um valor `ErrNegativeSqrt` quando receber um número negativo.
 
