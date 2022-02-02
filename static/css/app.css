@@ -217,7 +217,7 @@ ul {
 a#run, a#kill {
     background-color: #375eab;
     color: #fff;
-    width: 40px;
+    width: 70px;
     text-align: center;
 }
 #run:hover:not(:active), #kill:hover:not(:active) {
