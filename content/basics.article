@@ -18,7 +18,7 @@ Por exemplo, o pacote `"math/rand"` compreende arquivos que começam com `packag
 #appengine: *Nota*: o ambiente em que esses programas são executados é
 #appengine: determinístico, então rand.Intn sempre retornará o mesmo número.
 #appengine:
-#appengine: (Para ver um número diferente, a semente do gerador de números; veja [[http://golang.org/pkg/math/rand/#Seed][`rand.Seed`]].)
+#appengine: (Para ver um número diferente, troque a semente do gerador de números; veja rand.Seed. ; veja [[http://golang.org/pkg/math/rand/#Seed][`rand.Seed`]]. O tempo é constante no playground, então você precisará utilizar algo diferente disso como semente.)
 
 .play basics/packages.go
 
