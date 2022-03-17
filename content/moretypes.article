@@ -84,7 +84,7 @@ Na prática, as slices são muito mais comuns do que as matrizes.
 
 O tipo `[]T` é uma slice com elementos do tipo `T`.
 
-Uma slice é fomada pela especificação de dois indices, um limite menor e 
+Uma slice é formada pela especificação de dois indices, um limite menor e 
 maior, separados por dois pontos: 
 
 	a[low : high]
