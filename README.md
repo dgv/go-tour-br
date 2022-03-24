@@ -1,6 +1,6 @@
 ## Um tour por Go
 
-[![Build Status](https://travis-ci.org/dgv/go-tour-br.svg?branch=master)](https://travis-ci.org/dgv/go-tour-br)
+[![CircleCI](https://circleci.com/gh/dgv/go-tour-br/tree/master.svg?style=svg&circle-token=9131279c0de516c450429c6993ada64e142a2827)](https://circleci.com/gh/dgv/go-tour-br/tree/master)
 
 Este é um tour por Go, uma introdução à linguagem de programação Go.
 
