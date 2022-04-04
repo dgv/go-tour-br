@@ -174,7 +174,7 @@ Ou, de uma forma mais simples:
 
 Diferente de C, em Go atribuição entre os itens de tipo diferente requer uma
 conversão explícita.
-Tente remover as conversões `float64` ou `int` no exemplo e veja o que acontece.
+Tente remover as conversões `float64` ou `uint` no exemplo e veja o que acontece.
 
 .play basics/type-conversions.go
 
