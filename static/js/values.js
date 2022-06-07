@@ -23,6 +23,11 @@ value('tableOfContents', [{
     'description': '<p>Aprenda como definir métodos nos tipos, como declarar interfaces e como juntar todas as coisas.</p>',
     'lessons': ['methods']
 }, {
+    'id': 'generics',
+    'title': 'Genéricos',
+    'description': '<p>Aprenda como usar parâmetros de tipo em funções e estruturas Go.</p>',
+    'lessons': ['generics']
+}, {
     'id': 'concurrency',
     'title': 'Concorrência',
     'description': '<p>Go oferece recursos de concorrência como parte do núcleo da linguagem.</p><p>Este módulo será sobre goroutines e canais, e como eles são usados para implementar diferentes padrões de concorrência.</p>',

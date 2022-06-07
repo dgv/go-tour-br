@@ -1,0 +1,34 @@
+Genéricos
+Go suporta programação genérica usando parâmetros de tipo. Esta lição mostra alguns exemplos para empregar genéricos em seu código.
+
+Os Autores de Go
+https://golang.org
+
+* Parâmetros de tipo
+
+As funções Go podem ser escritas para funcionar em vários tipos usando parâmetros de tipo. Os parâmetros de tipo de uma função aparecem entre colchetes, antes dos argumentos da função.
+
+  func Index[T comparable](s []T, x T) int
+
+Esta declaração significa que `s` é um slice de qualquer tipo `T` que cumpre o
+restrição interna `comparable`. `x` também é um valor do mesmo tipo.
+
+`comparable` é uma restrição útil que torna possível usar os operadores `==` e `!=` em valores do tipo. Neste exemplo, usamos para comparar um valor para todos os elementos da slice até que uma correspondência seja encontrada. Esta função `Index` funciona para qualquer tipo que suporte comparação.
+
+.play generics/index.go
+
+* Tipos genéricos
+
+Além das funções genéricas, Go também oferece suporte a tipos genéricos. Um tipo pode ser parametrizado com um parâmetro de tipo, que pode ser útil para implementar estruturas de dados genéricas.
+
+Este exemplo demonstra uma declaração de tipo simples para uma lista vinculada simples segurando qualquer tipo de valor.
+
+Como exercício, adicione algumas funcionalidades a esta implementação de lista.
+
+.play generics/list.go
+
+* Parabéns!
+
+Você terminou esta lição!
+
+Você pode voltar para lista de [[/list][módulos]] para achar o que aprender em seguida, ou continuar com a [[javascript:click('.next-page')][próxima lição]].
