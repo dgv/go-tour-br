@@ -80,14 +80,15 @@ Clique no [[javascript:highlightAndClick(".next-page")]["próximo"]] botão ou a
 #appengine: Para executar o tour localmente veja 
 #appengine: [[http://www.golangbr.org/doc/instalacao][baixando e instalando Go]]
 #appengine: então inicie o tour pela linha de comando:
-#appengine: 
-#appengine: 	go tool tour
-#appengine: 
-#appengine: Ou, você pode instalar e executar o tour manualmente, se você tiver qualquer problema executando o comando acima:
-#appengine: 
-#appengine:  go get golang.org/x/tour/gotour
-#appengine:  gotour
 #appengine:
+#appengine:  go install golang.org/x/website/tour@latest
+#appengine:  tour
+#appengine: 
+#appengine: Isso colocará um binário de tour no diretório bin do seu 
+#appengine: [[https://go.dev/cmd/go/#hdr-GOPATH_and_Modules][GOPATH]]. 
+#appengine: Quando você executar o programa do tour, o seu navegador abrirá 
+#appengine: mostrando sua versão local do tour.
+#appengine: 
 #appengine: O programa do tour irá abrir no seu navegador mostrando
 #appengine: sua versão local do tour.
 #appengine: 
