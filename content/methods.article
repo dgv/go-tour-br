@@ -208,9 +208,9 @@ Por exemplo, `fmt.Print` leva qualquer número de argumentos do tipo `interface{
 
 .play methods/empty-interface.go
 
-* Type assertation
+* Type assertion
 
-A _type_assertation_ fornece acesso ao valor concreto subjacente de um valor de interface.
+A _type_assertion_ fornece acesso ao valor concreto subjacente de um valor de interface.
 
 	t := i.(T)
 
@@ -220,7 +220,7 @@ e atribui o valor de `T` subjacente à variável `t`.
 Se `i` não detém uma `T`, a declaração irá desencadear um erro pânico.
 
 Para _testar_ se um valor de interface possui um tipo específico,
-uma _type assertation_ pode retornar dois valores: o valor subjacente
+uma _type assertion_ pode retornar dois valores: o valor subjacente
 e um valor booleano que informa se a afirmação é correta.
 
 	t, ok := i.(T)
@@ -236,7 +236,7 @@ Note a semelhança entre esta sintaxe e  da leitura de um map.
 
 * Type Switch
 
-Um _type_switch_ é uma construção que permite diversas _type_assertations_ em série.
+Um _type_switch_ é uma construção que permite diversas _type_assertions_ em série.
 
 Um _type_switch_ é como uma instrução `switch` regular, mas os _cases_ em um _type_switch_ especificam os tipos (e não valores), e esses valores são comparados com
 o tipo dos valores determinados da interface informada.
