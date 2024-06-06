@@ -6,88 +6,37 @@ package main
 
 import (
 	"flag"
-	"fmt"
-	"go/build"
 	"html/template"
 	"io"
+	"io/fs"
 	"log"
 	"net"
 	"net/http"
 	"net/url"
-	"os"
 	"os/exec"
-	"path/filepath"
 	"runtime"
 	"strings"
 	"time"
 
 	"golang.org/x/tools/playground/socket"
-
-	// Imports so that go build/install automatically installs them.
-	_ "golang.org/x/tour/pic"
-	_ "golang.org/x/tour/tree"
-	_ "golang.org/x/tour/wc"
+	//"golang.org/x/website/internal/webtest"
 )
 
 const (
-	basePkg    = "github.com/golangbr/go-tour-br/"
 	socketPath = "/socket"
 )
 
 var (
-	httpListen  = flag.String("http", "127.0.0.1:3999", "host:port to listen on")
+	httpListen  *string
+	openBrowser *bool
+	httpAddr    string
+)
+
+func Main() {
+	httpListen = flag.String("http", "127.0.0.1:3999", "host:port to listen on")
 	openBrowser = flag.Bool("openbrowser", true, "open browser automatically")
-)
 
-var (
-	// GOPATH containing the tour packages
-	gopath = os.Getenv("GOPATH")
-
-	httpAddr string
-)
-
-// isRoot reports whether path is the root directory of the tour tree.
-// To be the root, it must have content and template subdirectories.
-func isRoot(path string) bool {
-	_, err := os.Stat(filepath.Join(path, "content", "welcome.article"))
-	if err == nil {
-		_, err = os.Stat(filepath.Join(path, "template", "index.tmpl"))
-	}
-	return err == nil
-}
-
-func findRoot() (string, error) {
-	ctx := build.Default
-	p, err := ctx.Import(basePkg, "", build.FindOnly)
-	if err == nil && isRoot(p.Dir) {
-		return p.Dir, nil
-	}
-	tourRoot := filepath.Join(runtime.GOROOT(), "misc", "tour")
-	ctx.GOPATH = tourRoot
-	p, err = ctx.Import(basePkg, "", build.FindOnly)
-	if err == nil && isRoot(tourRoot) {
-		gopath = tourRoot
-		return tourRoot, nil
-	}
-	return "", fmt.Errorf("could not find go-tour content; check $GOROOT and $GOPATH")
-}
-
-func main() {
 	flag.Parse()
-
-	if os.Getenv("GAE_ENV") == "standard" {
-		log.Println("running in App Engine Standard mode")
-		gaeMain()
-		return
-	}
-
-	// find and serve the go tour files
-	root, err := findRoot()
-	if err != nil {
-		log.Fatalf("Couldn't find tour files: %v", err)
-	}
-
-	log.Println("Serving content from", root)
 
 	host, port, err := net.SplitHostPort(*httpListen)
 	if err != nil {
@@ -101,17 +50,21 @@ func main() {
 	}
 	httpAddr = host + ":" + port
 
-	if err := initTour(root, "SocketTransport"); err != nil {
+	if err := initTour(http.DefaultServeMux, "SocketTransport"); err != nil {
 		log.Fatal(err)
 	}
 
 	http.HandleFunc("/", rootHandler)
-	http.HandleFunc("/lesson/", lessonHandler)
+	http.HandleFunc("/_/fmt", fmtHandler)
+	//fs := http.FileServer(http.FS(contentTour))
+	//	http.Handle("/favicon.ico", fs)
+	//	http.Handle("/images/", fs)
 
 	origin := &url.URL{Scheme: "http", Host: host + ":" + port}
 	http.Handle(socketPath, socket.NewHandler(origin))
 
-	registerStatic(root)
+	// h := webtest.HandlerWithCheck(http.DefaultServeMux, "/_readycheck",
+	// 	os.DirFS("."), "testdata/*.txt")
 
 	go func() {
 		url := "http://" + httpAddr
@@ -121,21 +74,32 @@ func main() {
 			log.Printf("Please open your web browser and visit %s", url)
 		}
 	}()
-	log.Fatal(http.ListenAndServe(httpAddr, nil))
+
+	log.Fatal(http.ListenAndServe(httpAddr, nil)) //&logging{h}))
 }
 
-// registerStatic registers handlers to serve static content
-// from the directory root.
-func registerStatic(root string) {
-	// Keep these static file handlers in sync with app.yaml.
-	http.Handle("/favicon.ico", http.FileServer(http.Dir(filepath.Join(root, "static", "img"))))
-	static := http.FileServer(http.Dir(root))
-	http.Handle("/content/img/", static)
-	http.Handle("/static/", static)
+type logging struct {
+	h http.Handler
+}
+
+func (l *logging) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	println(r.URL.Path)
+	l.h.ServeHTTP(w, r)
+}
+
+func must(fsys fs.FS, err error) fs.FS {
+	if err != nil {
+		panic(err)
+	}
+	return fsys
 }
 
 // rootHandler returns a handler for all the requests except the ones for lessons.
 func rootHandler(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path == "/" {
+		http.Redirect(w, r, "/tour/", http.StatusFound)
+		return
+	}
 	if err := renderUI(w); err != nil {
 		log.Println(err)
 	}
@@ -143,7 +107,7 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 
 // lessonHandler handler the HTTP requests for lessons.
 func lessonHandler(w http.ResponseWriter, r *http.Request) {
-	lesson := strings.TrimPrefix(r.URL.Path, "/lesson/")
+	lesson := strings.TrimPrefix(r.URL.Path, "/tour/lesson/")
 	if err := writeLesson(lesson, w); err != nil {
 		if err == lessonNotFound {
 			http.NotFound(w, r)
@@ -165,27 +129,6 @@ If you don't understand this message, hit Control-C to terminate this process.
 
 WARNING!  WARNING!  WARNING!
 `
-
-type response struct {
-	Output string `json:"output"`
-	Errors string `json:"compile_errors"`
-}
-
-func init() {
-	socket.Environ = environ
-}
-
-// environ returns the original execution environment with GOPATH
-// replaced (or added) with the value of the global var gopath.
-func environ() (env []string) {
-	for _, v := range os.Environ() {
-		if !strings.HasPrefix(v, "GOPATH=") {
-			env = append(env, v)
-		}
-	}
-	env = append(env, "GOPATH="+gopath)
-	return
-}
 
 // waitServer waits some time for the http Server to start
 // serving url. The return value reports whether it starts.

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package main // import "golang.org/x/tour"
+package main
 
 import (
 	"bytes"
@@ -12,14 +12,13 @@ import (
 	"fmt"
 	"html/template"
 	"io"
-	"io/ioutil"
+	"io/fs"
 	"net/http"
-	"os"
+	"path"
 	"path/filepath"
 	"strings"
 	"time"
 
-	"golang.org/x/tools/godoc/static"
 	"golang.org/x/tools/present"
 )
 
@@ -29,28 +28,26 @@ var (
 	lessonNotFound = fmt.Errorf("lesson not found")
 )
 
-// initTour loads tour.article and the relevant HTML templates from the given
-// tour root, and renders the template to the tourContent global variable.
-func initTour(root, transport string) error {
+var contentTour = TourOnly()
+
+// initTour loads tour.article and the relevant HTML templates from root.
+func initTour(mux *http.ServeMux, transport string) error {
 	// Make sure playground is enabled before rendering.
 	present.PlayEnabled = true
 
 	// Set up templates.
-	action := filepath.Join(root, "template", "action.tmpl")
-	tmpl, err := present.Template().ParseFiles(action)
+	tmpl, err := present.Template().ParseFS(contentTour, "tour/template/action.tmpl")
 	if err != nil {
 		return fmt.Errorf("parse templates: %v", err)
 	}
 
 	// Init lessons.
-	contentPath := filepath.Join(root, "content")
-	if err := initLessons(tmpl, contentPath); err != nil {
+	if err := initLessons(tmpl); err != nil {
 		return fmt.Errorf("init lessons: %v", err)
 	}
 
-	// Init UI
-	index := filepath.Join(root, "template", "index.tmpl")
-	ui, err := template.ParseFiles(index)
+	// Init UI.
+	ui, err := template.ParseFS(contentTour, "tour/template/index.tmpl")
 	if err != nil {
 		return fmt.Errorf("parse index.tmpl: %v", err)
 	}
@@ -58,81 +55,84 @@ func initTour(root, transport string) error {
 
 	data := struct {
 		AnalyticsHTML template.HTML
-		SocketAddr    string
-		Transport     template.JS
-	}{analyticsHTML, socketAddr(), template.JS(transport)}
+	}{analyticsHTML}
 
 	if err := ui.Execute(buf, data); err != nil {
 		return fmt.Errorf("render UI: %v", err)
 	}
 	uiContent = buf.Bytes()
 
-	return initScript(root)
+	mux.HandleFunc("/tour/", rootHandler)
+	mux.HandleFunc("/tour/lesson/", lessonHandler)
+	mux.Handle("/tour/static/", http.FileServer(http.FS(contentTour)))
+
+	return initScript(mux, socketAddr(), transport)
 }
 
-// initLessonss finds all the lessons in the passed directory, renders them,
+// initLessons finds all the lessons in the content directory, renders them,
 // using the given template and saves the content in the lessons map.
-func initLessons(tmpl *template.Template, content string) error {
-	dir, err := os.Open(content)
-	if err != nil {
-		return err
-	}
-	files, err := dir.Readdirnames(0)
+func initLessons(tmpl *template.Template) error {
+	files, err := fs.ReadDir(contentTour, "tour")
 	if err != nil {
 		return err
 	}
 	for _, f := range files {
-		if filepath.Ext(f) != ".article" {
+		if path.Ext(f.Name()) != ".article" {
 			continue
 		}
-		content, err := parseLesson(tmpl, filepath.Join(content, f))
+		content, err := parseLesson(f.Name(), tmpl)
 		if err != nil {
-			return fmt.Errorf("parsing %v: %v", f, err)
+			return fmt.Errorf("parsing %v: %v", f.Name(), err)
 		}
-		name := strings.TrimSuffix(f, ".article")
+		name := strings.TrimSuffix(f.Name(), ".article")
 		lessons[name] = content
 	}
 	return nil
 }
 
-// File defines the JSON form of a code file in a page.
-type File struct {
+// file defines the JSON form of a code file in a page.
+type file struct {
 	Name    string
 	Content string
 	Hash    string
 }
 
-// Page defines the JSON form of a tour lesson page.
-type Page struct {
+// page defines the JSON form of a tour lesson page.
+type page struct {
 	Title   string
 	Content string
-	Files   []File
+	Files   []file
 }
 
-// Lesson defines the JSON form of a tour lesson.
-type Lesson struct {
+// lesson defines the JSON form of a tour lesson.
+type lesson struct {
 	Title       string
 	Description string
-	Pages       []Page
+	Pages       []page
 }
 
-// parseLesson parses and returns a lesson content given its name and
-// the template to render it.
-func parseLesson(tmpl *template.Template, path string) ([]byte, error) {
-	f, err := os.Open(path)
+// parseLesson parses and returns a lesson content given its path
+// relative to root ('/'-separated) and the template to render it.
+func parseLesson(path string, tmpl *template.Template) ([]byte, error) {
+	f, err := contentTour.Open("tour/" + path)
 	if err != nil {
 		return nil, err
 	}
 	defer f.Close()
-	doc, err := present.Parse(prepContent(f), path, 0)
+	ctx := &present.Context{
+		ReadFile: func(filename string) ([]byte, error) {
+			return fs.ReadFile(contentTour, "tour/"+filepath.ToSlash(filename))
+		},
+	}
+	doc, err := ctx.Parse(prepContent(f), path, 0)
 	if err != nil {
 		return nil, err
 	}
 
-	lesson := Lesson{
+	lesson := lesson{
 		doc.Title,
 		doc.Subtitle,
-		make([]Page, len(doc.Sections)),
+		make([]page, len(doc.Sections)),
 	}
 
 	for i, sec := range doc.Sections {
@@ -144,7 +144,7 @@ func parseLesson(tmpl *template.Template, path string) ([]byte, error) {
 		p.Title = sec.Title
 		p.Content = w.String()
 		codes := findPlayCode(sec)
-		p.Files = make([]File, len(codes))
+		p.Files = make([]file, len(codes))
 		for i, c := range codes {
 			f := &p.Files[i]
 			f.Name = c.FileName
@@ -223,28 +223,11 @@ func renderUI(w io.Writer) error {
 	return err
 }
 
-// nocode returns true if the provided Section contains
-// no Code elements with Play enabled.
-func nocode(s present.Section) bool {
-	for _, e := range s.Elem {
-		if c, ok := e.(present.Code); ok && c.Play {
-			return false
-		}
-	}
-	return true
-}
-
 // initScript concatenates all the javascript files needed to render
 // the tour UI and serves the result on /script.js.
-func initScript(root string) error {
+func initScript(mux *http.ServeMux, socketAddr, transport string) error {
 	modTime := time.Now()
 	b := new(bytes.Buffer)
-
-	content, ok := static.Files["playground.js"]
-	if !ok {
-		return fmt.Errorf("playground.js not found in static files")
-	}
-	b.WriteString(content)
 
 	// Keep this list in dependency order
 	files := []string{
@@ -254,6 +237,7 @@ func initScript(root string) error {
 		"static/lib/codemirror/lib/codemirror.js",
 		"static/lib/codemirror/mode/go/go.js",
 		"static/lib/angular-ui.min.js",
+		"static/js/playground.js",
 		"static/js/app.js",
 		"static/js/controllers.js",
 		"static/js/directives.js",
@@ -262,17 +246,23 @@ func initScript(root string) error {
 	}
 
 	for _, file := range files {
-		f, err := ioutil.ReadFile(filepath.Join(root, file))
+		f, err := fs.ReadFile(contentTour, path.Clean("tour/"+file))
 		if err != nil {
-			return fmt.Errorf("couldn't open %v: %v", file, err)
+			return err
 		}
-		_, err = b.Write(f)
-		if err != nil {
-			return fmt.Errorf("error concatenating %v: %v", file, err)
-		}
+		b.Write(f)
 	}
 
-	http.HandleFunc("/script.js", func(w http.ResponseWriter, r *http.Request) {
+	f, err := fs.ReadFile(contentTour, "tour/static/js/page.js")
+	if err != nil {
+		return err
+	}
+	s := string(f)
+	s = strings.ReplaceAll(s, "{{.SocketAddr}}", socketAddr)
+	s = strings.ReplaceAll(s, "{{.Transport}}", transport)
+	b.WriteString(s)
+
+	mux.HandleFunc("/tour/script.js", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-type", "application/javascript")
 		// Set expiration time in one week.
 		w.Header().Set("Cache-control", "max-age=604800")

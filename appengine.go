@@ -7,34 +7,26 @@ package main
 import (
 	"bufio"
 	"bytes"
+	"fmt"
 	"html/template"
 	"io"
 	"log"
 	"net/http"
 	"os"
-
-	_ "golang.org/x/tools/playground"
 )
 
-func gaeMain() {
+const runUrl = "https://go.dev/_/compile"
+
+func RegisterHandlers(mux *http.ServeMux) error {
 	prepContent = gaePrepContent
 	socketAddr = gaeSocketAddr
 	analyticsHTML = template.HTML(os.Getenv("TOUR_ANALYTICS"))
 
-	if err := initTour(".", "HTTPTransport"); err != nil {
-		log.Fatal(err)
+	if err := initTour(mux, "HTTPTransport"); err != nil {
+		return err
 	}
 
-	http.Handle("/", hstsHandler(rootHandler))
-	http.Handle("/lesson/", hstsHandler(lessonHandler))
-
-	registerStatic(".")
-
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
-	}
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+	return nil
 }
 
 // gaePrepContent returns a Reader that produces the content from the given
@@ -77,14 +69,29 @@ func gaePrepContent(in io.Reader) io.Reader {
 	return out
 }
 
+func runHandler(w http.ResponseWriter, r *http.Request) {
+	if err := passThru(w, r); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintln(w, "Compile server error.")
+	}
+}
+
+func passThru(w io.Writer, req *http.Request) error {
+	defer req.Body.Close()
+	req.Header.Set("User-Agent", "go-vim")
+	r, err := http.Post(runUrl, req.Header.Get("Content-type"), req.Body)
+	if err != nil {
+		log.Fatalf("making POST request: %v", err)
+		return err
+	}
+	defer r.Body.Close()
+	if _, err := io.Copy(w, r.Body); err != nil {
+		log.Fatalf("copying response Body: %v", err)
+		return err
+	}
+	return nil
+}
+
 // gaeSocketAddr returns the WebSocket handler address.
 // The App Engine version does not provide a WebSocket handler.
 func gaeSocketAddr() string { return "" }
-
-// hstsHandler wraps an http.HandlerFunc such that it sets the HSTS header.
-func hstsHandler(fn http.HandlerFunc) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Strict-Transport-Security", "max-age=31536000; preload")
-		fn(w, r)
-	})
-}

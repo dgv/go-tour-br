@@ -16,10 +16,6 @@ import (
 	"golang.org/x/tools/imports"
 )
 
-func init() {
-	http.HandleFunc("/fmt", fmtHandler)
-}
-
 type fmtResponse struct {
 	Body  string
 	Error string
