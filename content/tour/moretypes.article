@@ -84,8 +84,8 @@ Na prática, as slices são muito mais comuns do que as matrizes.
 
 O tipo `[]T` é uma slice com elementos do tipo `T`.
 
-Uma slice é formada pela especificação de dois indices, um limite menor e 
-maior, separados por dois pontos: 
+Uma slice é formada pela especificação de dois indices, um limite menor e
+maior, separados por dois pontos:
 
 	a[low : high]
 
@@ -178,10 +178,10 @@ Uma slice nula tem o comprimento e a capacidade igual 0.
 
 * Criando uma slice com make
 
-As slices podem ser criadas com a função `make` padrão;
-isto é como você criar matrizes dinamicamente.
+As slices podem ser criadas com a função make.
+Com ela você pode criar matrizes dinamicamente.
 
-O função `make` aloca uma matriz zerada
+A função `make` aloca uma matriz zerada
 e retorna uma slice que se refere a essa matriz:
 
 	a := make([]int, 5)  // len(a)=5
@@ -298,7 +298,7 @@ Se `key` não está no map então  `elem` tem valor zero para o elemento do tipo
 _Nota_: Se `elem` ou `ok` não foi declarado ainda você pode usar esta forma de declaração curta:
 
 	elem, ok := m[key]
- 
+
 .play moretypes/mutating-maps.go
 
 * Exercício: Maps
@@ -320,7 +320,7 @@ Funções valores podem ser usadas como argumentos de funções e retornar valor
 * Funções closures
 
 As funções Go podem ser closures. Um closure é uma função valor que referencia variáveis
-de fora de seu corpo. A função pode acessar e atribuir nas variáveis referenciadas; nesse sentido 
+de fora de seu corpo. A função pode acessar e atribuir nas variáveis referenciadas; nesse sentido
 a função é "limitada" às variáveis.
 
 Por exemplo, a função `adder` retorna um closure. Cada closure limita sua própria variável `sum`.
