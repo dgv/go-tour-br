@@ -40,25 +40,26 @@ pacote (o qual inclui os tipos padrões tais como `int`).
 
 * Ponteiro receptor
 
-Você pode declarar métodos com ponteiro receptor.
+Você pode declarar métodos com ponteiros receptores.
 
-Isso significa que o tipo de receptor tem a sintaxe literal `*t` por algum tipo `t`.
-(Além disso, `t` não pode ser ele próprio, um ponteiro como `*int`.)
+Significa que o tipo do receptor tem a sintaxe literal `*t` para um tipo `t`.
+(Além disso, `t` deve ser um tipo local, não pode ser externo, como `*int`.)
 
-Por exemplo, o método `Scale` aqui é definido no `*Vertex`.
+Por exemplo, método `Scale` aqui é definido em `*Vertex`.
 
-Métodos com ponteiro receptores pode modificar o valor ao qual o receptor
-Os pontos (como `Scale` faz aqui).
-Desde métodos muitas vezes precisam modificar seu receptor, receptores de ponteiro são mais comuns do que receptores de valor.
+Métodos com receptores ponteiro podem modificar o valor que o receptor aponta (como `Scale` faz aqui).
+Esta é uma prática muito utilizada, e geralmente é ainda mais comum que receptores normais (com valor em cópia).
 
-Tente remover o `*` a partir da declaração da função `Scale` na linha 16
-e observar como o comportamento do programa muda.
+Podemos entender os ponteiros como uma referência à variável original, ao invés de receber uma cópia daquele valor.
 
-Com um receptor de valor, o método `Scale` opera sobre uma cópia do original
-`Valor Vertex`.
-(Este é o mesmo comportamento para qualquer outro argumento da função.)
-O método `Scale` deve ter um receptor ponteiro para mudar o `valor Vertex`
-declarados na função `main`.
+Tente remover o `*` da declaração da função `Scale` na linha 16
+e observe como o comportamento do programa muda.
+
+Com um receptor de valor, o método `Scale` é chamado com uma cópia do valor original de
+`Vertex`.
+(Este é o mesmo comportamento de qualquer outro argumento de função.)
+O método `Scale` deve conter um receptor ponteiro para mudar o valor de valor de `Vertex`
+declarado na função `main`.
 
 .play methods/methods-pointers.go
 
